@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Relics of the Forgotten Age II</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-l:#F0D080;--gold-d:#8B6914;--parch:#F5E6C8;--parch-d:#D4B896;--ink:#2C1810;--ember:#C0392B;--shade:#0d0a06;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--shade);color:var(--parch);font-family:'EB Garamond',serif;min-height:100vh;overflow:auto;touch-action:auto;}
+.screen{display:none;min-height:100vh;position:relative;}
+.screen.active{display:flex;flex-direction:column;}
+#s-title{background:radial-gradient(ellipse at 50% 30%,#2a1a05 0%,#0d0a06 70%);align-items:center;justify-content:center;text-align:center;padding:20px;overflow-y:auto;}
+.t-runes{position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(201,168,76,.03) 40px,rgba(201,168,76,.03) 41px),repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(201,168,76,.03) 40px,rgba(201,168,76,.03) 41px);pointer-events:none;}
+.t-glow{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,76,.12) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-60%);animation:pglow 3s ease-in-out infinite;}
+@keyframes pglow{0%,100%{opacity:.5;transform:translate(-50%,-60%) scale(1);}50%{opacity:1;transform:translate(-50%,-60%) scale(1.2);}}
+.t-emblem{font-size:90px;animation:float 4s ease-in-out infinite;filter:drop-shadow(0 0 25px rgba(201,168,76,.7));position:relative;z-index:2;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+.t-main{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,5.5vw,30px);font-weight:900;color:var(--gold-l);letter-spacing:2px;text-shadow:0 0 30px rgba(201,168,76,.8);line-height:1.3;margin-bottom:8px;position:relative;z-index:2;}
+.t-sub{font-family:'Cinzel',serif;font-size:clamp(10px,2.5vw,13px);color:var(--gold);letter-spacing:6px;opacity:.8;margin-bottom:10px;z-index:2;position:relative;}
+.divider{width:220px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto;}
+.islands-preview{display:flex;gap:10px;margin:14px 0;z-index:2;position:relative;flex-wrap:wrap;justify-content:center;}
+.island-pill{padding:7px 13px;border-radius:20px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;border:1px solid;display:flex;align-items:center;gap:5px;}
+.island-pill.war{background:rgba(139,26,26,.2);border-color:rgba(139,26,26,.5);color:#e74c3c;}
+.island-pill.proph{background:rgba(26,26,107,.2);border-color:rgba(26,26,107,.5);color:#5b8cff;}
+.island-pill.dead{background:rgba(26,58,26,.2);border-color:rgba(26,58,26,.5);color:#4CAF50;}
+.feats{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:8px 0;max-width:320px;z-index:2;position:relative;}
+.feat{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:4px 9px;font-size:10px;color:var(--gold);font-family:'Cinzel',serif;}
+.btn-p{background:linear-gradient(135deg,var(--gold-d),var(--gold),var(--gold-d));color:var(--ink);border:none;padding:15px 42px;font-family:'Cinzel',serif;font-size:15px;font-weight:700;letter-spacing:3px;cursor:pointer;border-radius:2px;text-transform:uppercase;transition:all .3s;box-shadow:0 0 20px rgba(201,168,76,.4);z-index:2;position:relative;}
+.btn-p:active{transform:scale(.97);}
+.btn-s{background:transparent;color:var(--gold);border:1px solid var(--gold-d);padding:10px 26px;font-family:'Cinzel',serif;font-size:12px;font-weight:600;letter-spacing:2px;cursor:pointer;border-radius:2px;text-transform:uppercase;transition:all .3s;margin-top:8px;z-index:2;position:relative;}
+.btn-s:active{background:rgba(201,168,76,.1);}
+#s-setup{background:radial-gradient(ellipse at 50% 0%,#1a0f02 0%,#0d0a06 60%);overflow-y:auto;}
+.sh{text-align:center;padding:18px 16px 14px;}
+.sh-t{font-family:'Cinzel Decorative',serif;font-size:clamp(15px,4vw,20px);color:var(--gold-l);letter-spacing:2px;}
+.sh-s{font-family:'Cinzel',serif;font-size:10px;color:var(--gold-d);letter-spacing:4px;text-transform:uppercase;margin-top:4px;opacity:.7;}
+.cnt-row{display:flex;justify-content:center;gap:9px;padding:10px 0;}
+.cnt-btn{width:50px;height:50px;border-radius:50%;background:rgba(201,168,76,.08);border:2px solid rgba(201,168,76,.3);color:var(--gold);font-family:'Cinzel Decorative',serif;font-size:19px;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;}
+.cnt-btn.sel{background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--ink);border-color:var(--gold-l);box-shadow:0 0 18px rgba(201,168,76,.5);transform:scale(1.1);}
+.pcard{background:linear-gradient(135deg,rgba(201,168,76,.05),rgba(26,58,107,.08));border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:13px;margin:7px 12px;position:relative;overflow:hidden;}
+.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.pcard-top{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.role-ico{font-size:30px;}
+.role-nm{font-family:'Cinzel',serif;font-size:13px;font-weight:700;}
+.role-ds{font-size:11px;color:var(--parch-d);opacity:.8;line-height:1.4;}
+.role-pass{font-size:10px;color:var(--gold-d);margin-top:2px;font-family:'Cinzel',serif;letter-spacing:.5px;}
+.abl-tags{display:flex;flex-wrap:wrap;gap:4px;margin:7px 0;}
+.abl-tag{font-size:10px;color:var(--gold);background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:3px 8px;}
+.ninput{width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(201,168,76,.3);border-radius:4px;padding:9px 12px;color:var(--parch);font-family:'EB Garamond',serif;font-size:16px;outline:none;transition:border-color .3s;}
+.ninput:focus{border-color:var(--gold);}
+.ninput::placeholder{color:rgba(201,168,76,.4);font-style:italic;}
+#s-handoff{background:#000;align-items:center;justify-content:center;text-align:center;overflow-y:auto;position:relative;}
+.ho-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(201,168,76,.06) 0%,#000 70%);animation:hopulse 2s ease-in-out infinite;}
+@keyframes hopulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+.ho-passes{font-family:'Cinzel',serif;font-size:11px;letter-spacing:6px;color:var(--gold-d);text-transform:uppercase;opacity:0;animation:fiu .8s .5s forwards;position:relative;z-index:2;}
+.ho-name{font-family:'Cinzel Decorative',serif;font-size:clamp(22px,7vw,34px);color:var(--gold-l);text-shadow:0 0 30px rgba(201,168,76,.8);opacity:0;animation:fiu .8s .7s forwards;position:relative;z-index:2;margin-bottom:4px;}
+.ho-role{font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;opacity:0;animation:fiu .8s .9s forwards;position:relative;z-index:2;margin-bottom:20px;}
+.ho-creature{font-size:130px;animation:cemerge 1s ease-out forwards;position:relative;z-index:2;cursor:pointer;}
+@keyframes cemerge{0%{transform:scale(0) translateY(60px);opacity:0;filter:blur(20px);}60%{transform:scale(1.15) translateY(-10px);opacity:1;}100%{transform:scale(1) translateY(0);opacity:1;}}
+.ho-hint{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:3px;opacity:0;animation:fiu .8s 1.1s forwards,blinkhint 2s 1.5s infinite;position:relative;z-index:2;margin-top:18px;}
+@keyframes fiu{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes blinkhint{0%,100%{opacity:1;}50%{opacity:.3;}}
+.ho-mission{background:rgba(0,0,0,.6);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:10px 16px;margin:14px 20px 0;opacity:0;animation:fiu .8s 1.3s forwards;position:relative;z-index:2;}
+.ho-m-lbl{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--gold-d);text-transform:uppercase;margin-bottom:4px;}
+.ho-m-txt{font-size:12px;color:var(--parch-d);font-style:italic;}
+#s-game{background:var(--shade);overflow:auto;position:relative;flex-direction:column;}
+.ghud{background:linear-gradient(180deg,rgba(0,0,0,.97) 0%,rgba(13,10,6,.95) 100%);border-bottom:1px solid rgba(201,168,76,.2);padding:6px 10px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;position:relative;z-index:10;gap:4px;}
+.hud-p{display:flex;align-items:center;gap:5px;}
+.pstat{font-size:22px;transition:all .3s;position:relative;}
+.pstat.active{animation:statpulse 1.5s ease-in-out infinite;}
+@keyframes statpulse{0%,100%{filter:drop-shadow(0 0 4px currentColor);}50%{filter:drop-shadow(0 0 14px currentColor) brightness(1.3);transform:scale(1.08);}}
+.pinfo{flex:1;}
+.p-hname{font-family:'Cinzel',serif;font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--gold-l);}
+.p-hrole{font-size:8px;color:var(--gold-d);opacity:.8;}
+.p-hrel{display:flex;gap:2px;flex-wrap:wrap;margin-top:2px;}
+.rdot{width:7px;height:7px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.25);}
+.rdot.got{background:var(--gold);border-color:var(--gold-l);}
+.hud-mid{text-align:center;flex:0 0 auto;}
+.turn-lbl{font-family:'Cinzel',serif;font-size:8px;color:var(--gold-d);letter-spacing:1px;}
+.turn-num{font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold-l);font-weight:700;line-height:1;}
+.lv-badge{background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--ink);border-radius:50%;width:14px;height:14px;font-family:'Cinzel',serif;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;position:absolute;bottom:-2px;right:-2px;}
+.hp-track{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;margin-top:2px;width:50px;}
+.hp-fill{height:100%;border-radius:2px;transition:width .5s;}
+.board-wrap{flex:1;position:relative;overflow:auto;min-height:340px;}
+.board-scroll{position:relative;overflow:auto;width:100%;height:100%;touch-action:pan-x pan-y;cursor:grab;-webkit-overflow-scrolling:touch;}
+.board-canvas{position:relative;}
+.bsvg{position:absolute;inset:0;pointer-events:none;z-index:1;}
+.tnode{position:absolute;width:58px;height:58px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;z-index:5;}
+.tinner{width:100%;height:100%;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;border:2px solid rgba(201,168,76,.35);background:radial-gradient(circle at 40% 35%,rgba(201,168,76,.12) 0%,rgba(13,10,6,.92) 70%);box-shadow:0 0 12px rgba(201,168,76,.08),inset 0 0 8px rgba(0,0,0,.5);transition:all .3s;}
+.tnode.has-relic .tinner{border-color:var(--gold);animation:relicglow 2s ease-in-out infinite;}
+@keyframes relicglow{0%,100%{box-shadow:0 0 15px rgba(201,168,76,.3);}50%{box-shadow:0 0 30px rgba(201,168,76,.65);}}
+.tnode.event-t .tinner{border-color:var(--ember);box-shadow:0 0 12px rgba(192,57,43,.25);}
+.tnode.fog .tinner{background:rgba(0,0,0,.85);border-color:rgba(255,255,255,.1);}
+.tnode.fog .t-ico,.tnode.fog .t-lbl{opacity:0;}
+.tnode.fog::after{content:'?';position:absolute;font-size:20px;color:rgba(201,168,76,.4);font-family:'Cinzel Decorative',serif;}
+.tnode.ambush .tinner{border-color:#ff9900;animation:ambglow 1s ease-in-out infinite;}
+@keyframes ambglow{0%,100%{box-shadow:0 0 8px rgba(255,153,0,.3);}50%{box-shadow:0 0 20px rgba(255,153,0,.6);}}
+.tnode.reachable .tinner{border-color:#4CAF50;animation:reachpulse 1s ease-in-out infinite;}
+@keyframes reachpulse{0%,100%{box-shadow:0 0 10px rgba(76,175,80,.3);}50%{box-shadow:0 0 25px rgba(76,175,80,.65);}}
+.tnode.war-island .tinner{background:radial-gradient(circle at 40% 35%,rgba(139,26,26,.2) 0%,rgba(13,10,6,.92) 70%);}
+.tnode.proph-island .tinner{background:radial-gradient(circle at 40% 35%,rgba(26,26,107,.2) 0%,rgba(13,10,6,.92) 70%);}
+.tnode.dead-island .tinner{background:radial-gradient(circle at 40% 35%,rgba(26,58,26,.2) 0%,rgba(13,10,6,.92) 70%);}
+.t-ico{font-size:18px;line-height:1;}
+.t-lbl{font-family:'Cinzel',serif;font-size:6.5px;color:var(--gold);text-align:center;line-height:1.2;letter-spacing:.3px;margin-top:1px;}
+.t-lvl{position:absolute;top:-4px;right:-4px;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--ink);border-radius:50%;width:14px;height:14px;font-family:'Cinzel',serif;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+.ptok{position:absolute;font-size:12px;animation:tokbob 2s ease-in-out infinite;z-index:10;}
+@keyframes tokbob{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
+.abar{background:linear-gradient(0deg,rgba(0,0,0,.99) 0%,rgba(13,10,6,.95) 100%);border-top:1px solid rgba(201,168,76,.2);padding:7px 9px;flex-shrink:0;position:relative;z-index:10;}
+.cbanner{text-align:center;margin-bottom:6px;padding:5px 10px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.15);border-radius:4px;}
+.cb-name{font-family:'Cinzel',serif;font-size:12px;color:var(--gold-l);font-weight:700;}
+.cb-res{font-size:10px;color:var(--gold-d);opacity:.9;margin-top:2px;}
+.abtns{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+.abtn{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.22);border-radius:6px;padding:7px 3px;color:var(--gold);font-family:'Cinzel',serif;font-size:9px;font-weight:600;letter-spacing:.3px;cursor:pointer;transition:all .2s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.abtn-ico{font-size:16px;}
+.abtn:active{background:rgba(201,168,76,.18);transform:scale(.96);}
+.abtn.disabled{opacity:.35;pointer-events:none;}
+.abtn.hl{background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(201,168,76,.05));border-color:var(--gold);box-shadow:0 0 8px rgba(201,168,76,.2);}
+.abtn.red{border-color:rgba(192,57,43,.4);color:#e74c3c;}
+.mover{position:fixed;inset:0;background:rgba(0,0,0,.87);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
+.mover.active{display:flex;}
+.mbox{background:linear-gradient(135deg,#1a0f02,#0d0a06);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:20px;max-width:320px;width:92%;text-align:center;position:relative;box-shadow:0 0 40px rgba(201,168,76,.2);max-height:88vh;overflow-y:auto;}
+.mbox::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.mtitle{font-family:'Cinzel Decorative',serif;font-size:15px;color:var(--gold-l);margin-bottom:14px;letter-spacing:1px;}
+.dice-row{display:flex;justify-content:center;gap:14px;margin:16px 0;}
+.die{width:66px;height:66px;background:linear-gradient(135deg,#2a1a05,#1a0f02);border:2px solid var(--gold-d);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Cinzel Decorative',serif;font-size:30px;color:var(--gold-l);box-shadow:0 0 12px rgba(201,168,76,.2),inset 0 0 8px rgba(0,0,0,.5);}
+.die.rolling{animation:droll .6s ease-out;}
+@keyframes droll{0%{transform:rotate(0deg) scale(1.2);}25%{transform:rotate(90deg) scale(.8);}50%{transform:rotate(180deg) scale(1.2);}75%{transform:rotate(270deg) scale(.8);}100%{transform:rotate(360deg) scale(1);}}
+.dresult{font-size:13px;color:var(--parch);line-height:1.7;margin:10px 0;font-style:italic;min-height:38px;}
+.ocard{background:linear-gradient(160deg,#1a0f02 0%,#0d0507 50%,#0a0d1a 100%);border:1px solid var(--gold);border-radius:12px;padding:18px;max-width:300px;width:92%;text-align:center;position:relative;box-shadow:0 0 50px rgba(201,168,76,.3);}
+.ocard::before{content:'✦ ORACLE DECK ✦';position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:#0d0a06;color:var(--gold);font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;padding:0 10px;white-space:nowrap;}
+.card-sym{font-size:54px;margin:8px 0;}
+.card-nm{font-family:'Cinzel Decorative',serif;font-size:14px;color:var(--gold-l);margin-bottom:6px;}
+.card-type{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--gold-d);text-transform:uppercase;margin-bottom:10px;}
+.card-fx{font-size:12px;color:var(--parch);line-height:1.6;font-style:italic;padding:9px;background:rgba(201,168,76,.05);border-radius:6px;border:1px solid rgba(201,168,76,.15);margin-bottom:14px;}
+.ecard{background:linear-gradient(160deg,#1a0205 0%,#0d0a06 100%);border:1px solid var(--ember);border-radius:12px;padding:18px;max-width:300px;width:92%;text-align:center;box-shadow:0 0 40px rgba(192,57,43,.3);}
+.e-sym{font-size:54px;margin:8px 0;}
+.e-nm{font-family:'Cinzel Decorative',serif;font-size:14px;color:#e74c3c;margin-bottom:8px;}
+.e-fx{font-size:12px;color:var(--parch);line-height:1.6;font-style:italic;padding:9px;background:rgba(192,57,43,.05);border-radius:6px;border:1px solid rgba(192,57,43,.2);margin-bottom:14px;}
+.ancient-card{background:linear-gradient(160deg,#0a0507,#0d0a06,#050a07);border:2px solid #8B6914;border-radius:16px;padding:20px;max-width:310px;width:92%;text-align:center;box-shadow:0 0 60px rgba(201,168,76,.5);}
+.anc-sym{font-size:70px;margin:10px 0;animation:ancpulse 1.5s ease-in-out infinite;}
+@keyframes ancpulse{0%,100%{filter:drop-shadow(0 0 10px var(--gold));}50%{filter:drop-shadow(0 0 30px var(--gold)) brightness(1.3);}}
+.anc-nm{font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold-l);margin-bottom:6px;text-shadow:0 0 20px rgba(201,168,76,.8);}
+.anc-title{font-family:'Cinzel',serif;font-size:9px;letter-spacing:5px;color:var(--gold-d);margin-bottom:12px;}
+.anc-fx{font-size:13px;color:var(--parch);line-height:1.7;font-style:italic;padding:12px;background:rgba(201,168,76,.05);border-radius:8px;border:1px solid rgba(201,168,76,.2);margin-bottom:14px;}
+.bdisp{display:flex;justify-content:center;align-items:center;gap:16px;margin:14px 0;}
+.bside{text-align:center;flex:1;}
+.bstat{font-size:38px;}
+.bpnm{font-family:'Cinzel',serif;font-size:10px;color:var(--gold);margin:3px 0;}
+.bdval{font-family:'Cinzel Decorative',serif;font-size:34px;color:var(--gold-l);text-shadow:0 0 12px rgba(201,168,76,.7);}
+.bvs{font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--ember);}
+.bbonus{font-size:9px;color:var(--gold-d);font-style:italic;}
+.bhp{font-size:10px;color:var(--parch-d);margin-top:2px;}
+.mopts{display:flex;flex-direction:column;gap:7px;margin:10px 0;max-height:52vh;overflow-y:auto;}
+.mopt{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.22);border-radius:8px;padding:11px;color:var(--parch);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:9px;text-align:left;}
+.mopt:active{background:rgba(201,168,76,.18);}
+.mopt-ico{font-size:22px;}
+.mopt-info{flex:1;}
+.mopt-nm{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);font-weight:600;}
+.mopt-det{font-size:10px;color:var(--parch-d);opacity:.8;margin-top:2px;}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0;}
+.ritem{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);border-radius:6px;padding:9px;text-align:center;cursor:pointer;transition:all .2s;}
+.ritem:active{background:rgba(201,168,76,.18);}
+.ritem.sel{border-color:var(--gold);background:rgba(201,168,76,.15);}
+.r-ico{font-size:22px;}
+.r-nm{font-family:'Cinzel',serif;font-size:9px;color:var(--gold);letter-spacing:1px;margin-top:2px;}
+.r-cnt{font-size:15px;color:var(--gold-l);font-weight:bold;}
+.smodal{background:linear-gradient(135deg,#1a0f02,#0d0a06);border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:16px;max-width:340px;width:95%;max-height:82vh;overflow-y:auto;}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(201,168,76,.08);}
+.slbl{font-family:'Cinzel',serif;font-size:10px;color:var(--gold-d);letter-spacing:1px;}
+.sval{font-size:13px;color:var(--gold-l);font-weight:bold;}
+.upg-opt{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:12px;cursor:pointer;transition:all .2s;text-align:left;margin:6px 0;}
+.upg-opt:active{background:rgba(201,168,76,.15);}
+.upg-nm{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);margin-bottom:4px;}
+.upg-ds{font-size:11px;color:var(--parch-d);opacity:.8;line-height:1.4;}
+.upg-cost{font-size:10px;color:var(--ember);margin-top:4px;font-family:'Cinzel',serif;}
+.abl-item{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:12px;cursor:pointer;transition:all .2s;text-align:left;margin:5px 0;}
+.abl-item:active{background:rgba(201,168,76,.15);}
+.abl-item.off{opacity:.35;pointer-events:none;}
+.abl-nm{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);margin-bottom:3px;}
+.abl-ds{font-size:11px;color:var(--parch-d);line-height:1.4;}
+.abl-cost{font-size:10px;color:var(--ember);margin-top:4px;font-family:'Cinzel',serif;}
+.abl-cd{font-size:10px;color:#666;margin-top:2px;}
+.combo-slots{display:flex;gap:10px;justify-content:center;margin:12px 0;}
+.cslot{width:60px;height:80px;border:2px dashed rgba(201,168,76,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;background:rgba(201,168,76,.05);cursor:pointer;transition:all .2s;}
+.cslot.filled{border-color:var(--gold);background:rgba(201,168,76,.12);}
+#s-win{background:radial-gradient(ellipse at 50% 30%,#2a1a02 0%,#0d0a06 70%);align-items:center;justify-content:center;text-align:center;padding:30px 20px;overflow-y:auto;position:relative;}
+.wpart{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.wp{position:absolute;font-size:18px;animation:wpfall linear infinite;opacity:0;}
+@keyframes wpfall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
+.wcrown{font-size:80px;animation:crownapp 1s ease-out;filter:drop-shadow(0 0 20px var(--gold));}
+@keyframes crownapp{0%{transform:scale(0) translateY(-50px);opacity:0;}70%{transform:scale(1.2);opacity:1;}100%{transform:scale(1);opacity:1;}}
+.wtitle{font-family:'Cinzel Decorative',serif;font-size:clamp(18px,5vw,26px);color:var(--gold-l);text-shadow:0 0 30px rgba(201,168,76,.8);margin:10px 0;animation:fiu .8s .5s both;}
+.wplayer{font-family:'Cinzel Decorative',serif;font-size:clamp(22px,7vw,34px);color:var(--gold);text-shadow:0 0 40px rgba(201,168,76,1);animation:fiu .8s .8s both;}
+.wreason{font-size:15px;color:var(--parch-d);font-style:italic;margin:10px 0 20px;animation:fiu .8s 1s both;}
+.toast{position:fixed;top:68px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,rgba(13,10,6,.99),rgba(26,15,2,.99));border:1px solid var(--gold);border-radius:8px;padding:9px 18px;font-family:'Cinzel',serif;font-size:11px;color:var(--gold-l);letter-spacing:1px;z-index:200;text-align:center;box-shadow:0 0 18px rgba(201,168,76,.3);opacity:0;transition:opacity .3s;pointer-events:none;max-width:280px;}
+.toast.show{opacity:1;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.3);}
+::-webkit-scrollbar-thumb{background:rgba(201,168,76,.3);border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<!-- TITLE -->
+<div class="screen active" id="s-title">
+  <div class="t-runes"></div><div class="t-glow"></div>
+  <div class="t-emblem">🏺</div>
+  <div class="t-main">Relics of the<br>Forgotten Age</div>
+  <div class="divider"></div>
+  <div class="t-sub">Rise. Claim. Conquer.</div>
+  <div class="islands-preview">
+    <div class="island-pill war">⚔️ Island of War</div>
+    <div class="island-pill proph">🔮 Island of Prophecy</div>
+    <div class="island-pill dead">💀 Island of the Dead</div>
+  </div>
+  <div class="feats">
+    <span class="feat">🌫️ Fog of War</span><span class="feat">❤️ HP System</span>
+    <span class="feat">🗡️ Ambush</span><span class="feat">🌀 3 Abilities/Role</span>
+    <span class="feat">🏛️ Temple Upgrades</span><span class="feat">👁️ Ancient One</span>
+    <span class="feat">🔗 Combo Cards</span><span class="feat">👑 Claim & Rent</span>
+  </div>
+  <button class="btn-p" onclick="showScreen('s-setup')">BEGIN THE RITUAL</button>
+  <button class="btn-s" onclick="openModal('m-rules')">📜 How to Play</button>
+</div>
+<!-- SETUP -->
+<div class="screen" id="s-setup">
+  <div class="sh"><div class="sh-t">Choose Your Champions</div><div class="sh-s">Who dares enter the Forgotten Age?</div></div>
+  <div style="text-align:center;padding:4px 0 6px;">
+    <div style="font-family:'Cinzel',serif;font-size:10px;color:var(--gold-d);letter-spacing:2px;margin-bottom:7px;">NUMBER OF PLAYERS</div>
+    <div class="cnt-row">
+      <button class="cnt-btn sel" onclick="setPCount(2,this)">2</button>
+      <button class="cnt-btn" onclick="setPCount(3,this)">3</button>
+      <button class="cnt-btn" onclick="setPCount(4,this)">4</button>
+      <button class="cnt-btn" onclick="setPCount(5,this)">5</button>
+      <button class="cnt-btn" onclick="setPCount(6,this)">6</button>
+    </div>
+  </div>
+  <div id="pcards" style="padding:0 12px;overflow-y:auto;flex:1;"></div>
+  <div style="padding:12px;text-align:center;">
+    <button class="btn-p" onclick="startGame()" style="width:100%;">⚔️ ENTER THE TEMPLES</button>
+    <button class="btn-s" onclick="showScreen('s-title')" style="width:100%;margin-top:6px;">← Back</button>
+  </div>
+</div>
+<!-- HANDOFF -->
+<div class="screen" id="s-handoff">
+  <div class="ho-bg"></div>
+  <div class="ho-passes" id="ho-passes">THE FATE PASSES TO</div>
+  <div class="ho-name" id="ho-name">PLAYER</div>
+  <div class="ho-role" id="ho-role">Role</div>
+  <div class="ho-creature" id="ho-creature" onclick="dismissHandoff()">🐉</div>
+  <div class="ho-hint">✦ TAP THE ANCIENT ONE TO PROCEED ✦</div>
+  <div class="ho-mission" id="ho-mission">
+    <div class="ho-m-lbl">🕵️ Your Secret Mission</div>
+    <div class="ho-m-txt" id="ho-m-txt">...</div>
+  </div>
+</div>
+<!-- GAME -->
+<div class="screen" id="s-game">
+  <div class="ghud" id="ghud"></div>
+  <div class="board-wrap"><div class="board-scroll" id="bscroll"><div class="board-canvas" id="bcanvas"><svg class="bsvg" id="bsvg"></svg></div></div></div>
+  <div class="abar">
+    <div class="cbanner"><div class="cb-name" id="cb-name">—</div><div class="cb-res" id="cb-res">...</div></div>
+    <div class="abtns">
+      <div class="abtn hl" id="btn-move" onclick="openMoveModal()"><div class="abtn-ico">🏛️</div><div>MOVE</div></div>
+      <div class="abtn" id="btn-card" onclick="drawCard()"><div class="abtn-ico">🔮</div><div>ORACLE</div></div>
+      <div class="abtn" id="btn-claim" onclick="claimTemple()"><div class="abtn-ico">👑</div><div>CLAIM</div></div>
+      <div class="abtn" id="btn-ability" onclick="openAbilityModal()"><div class="abtn-ico">🌀</div><div>ABILITY</div></div>
+      <div class="abtn" id="btn-ambush" onclick="setAmbush()"><div class="abtn-ico">🗡️</div><div>AMBUSH</div></div>
+      <div class="abtn" id="btn-upgrade" onclick="openUpgradeModal()"><div class="abtn-ico">⬆️</div><div>UPGRADE</div></div>
+      <div class="abtn" id="btn-battle" onclick="initBattle()"><div class="abtn-ico">⚔️</div><div>BATTLE</div></div>
+      <div class="abtn" onclick="openTradeModal()"><div class="abtn-ico">⚖️</div><div>TRADE</div></div>
+      <div class="abtn" onclick="showStats()"><div class="abtn-ico">📊</div><div>STATS</div></div>
+      <div class="abtn" id="btn-combo" onclick="openComboModal()"><div class="abtn-ico">🔗</div><div>COMBO</div></div>
+      <div class="abtn red" onclick="summonAncient(false)"><div class="abtn-ico">👁️</div><div>ANCIENT</div></div>
+      <div class="abtn" onclick="endTurn()"><div class="abtn-ico">➡️</div><div>END TURN</div></div>
+    </div>
+  </div>
+</div>
+<!-- WIN -->
+<div class="screen" id="s-win">
+  <div class="wpart" id="wpart"></div>
+  <div class="wcrown" id="wcrown">👑</div>
+  <div class="wtitle">VICTORY!</div>
+  <div class="wplayer" id="wplayer">Champion</div>
+  <div class="wreason" id="wreason">Has claimed the throne</div>
+  <div class="divider" style="margin:16px auto;"></div>
+  <div id="wstats" style="margin-bottom:20px;font-size:12px;color:var(--parch-d);line-height:2.2;"></div>
+  <button class="btn-p" onclick="showScreen('s-title');resetGame();">PLAY AGAIN</button>
+</div>
+<!-- MODALS -->
+<div class="mover" id="m-move"><div class="mbox"><div class="mtitle">🏛️ Choose Your Path</div><div style="font-size:11px;color:var(--gold-d);text-align:center;margin-bottom:8px;font-family:'Cinzel',serif;" id="move-info"></div><div class="mopts" id="mopts"></div><button class="btn-s" onclick="closeModal('m-move')" style="width:100%;margin-top:8px;">← Cancel</button></div></div>
+<div class="mover" id="m-card"><div class="ocard"><div class="card-sym" id="c-sym">🔮</div><div class="card-nm" id="c-nm">Card</div><div class="card-type" id="c-type">Type</div><div class="card-fx" id="c-fx">Effect</div><div style="font-size:10px;color:var(--ember);margin-bottom:12px;font-family:'Cinzel',serif;" id="c-cost"></div><button class="btn-p" onclick="applyCard()" style="width:100%;">INVOKE THIS FATE</button><button class="btn-s" onclick="discardCard()" style="width:100%;margin-top:6px;">Discard</button></div></div>
+<div class="mover" id="m-event"><div class="ecard"><div class="e-sym" id="e-sym">⚡</div><div class="e-nm" id="e-nm">Event</div><div class="e-fx" id="e-fx">Effect</div><button class="btn-p" onclick="closeModal('m-event')" style="width:100%;background:linear-gradient(135deg,#7b241c,#c0392b,#7b241c);">ACCEPT FATE</button></div></div>
+<div class="mover" id="m-ancient"><div class="ancient-card"><div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:5px;color:var(--gold-d);margin-bottom:4px;">THE ANCIENT ONE AWAKENS</div><div class="anc-sym" id="anc-sym">👁️</div><div class="anc-nm" id="anc-nm">Name</div><div class="anc-title" id="anc-title">TITLE</div><div class="anc-fx" id="anc-fx">Effect</div><button class="btn-p" onclick="closeModal('m-ancient')" style="width:100%;">BOW BEFORE THE ANCIENT</button></div></div>
+<div class="mover" id="m-battle"><div class="mbox"><div class="mtitle">⚔️ COMBAT!</div><div class="bdisp" id="bdisp"></div><div class="dresult" id="bres">The gods watch in silence...</div><button class="btn-p" id="broll-btn" onclick="execBattle()" style="width:100%;background:linear-gradient(135deg,#7b241c,#c0392b,#7b241c);">ROLL FOR GLORY</button><button class="btn-s" id="bclose-btn" onclick="closeModal('m-battle')" style="width:100%;display:none;">END COMBAT</button></div></div>
+<div class="mover" id="m-trade"><div class="mbox"><div class="mtitle">⚖️ Resource Exchange</div><div style="font-size:11px;color:var(--parch-d);text-align:center;font-style:italic;margin-bottom:8px;">Select a trade partner</div><div id="trade-targets" style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px;"></div><div style="font-family:'Cinzel',serif;font-size:10px;color:var(--gold-d);text-align:center;letter-spacing:2px;margin-bottom:5px;">GIVE (2)</div><div class="res-grid" id="tgive"></div><div style="font-family:'Cinzel',serif;font-size:10px;color:var(--gold-d);text-align:center;letter-spacing:2px;margin:6px 0 5px;">RECEIVE (2)</div><div class="res-grid" id="trecv"></div><button class="btn-p" onclick="execTrade()" style="width:100%;margin-top:10px;">SEAL THE PACT</button><button class="btn-s" onclick="closeModal('m-trade')" style="width:100%;">← Cancel</button></div></div>
+<div class="mover" id="m-stats"><div class="smodal"><div class="mtitle">📊 Chronicle of Fate</div><div id="stats-content"></div><button class="btn-s" onclick="closeModal('m-stats')" style="width:100%;margin-top:14px;">CLOSE</button></div></div>
+<div class="mover" id="m-mission"><div class="mbox" style="border-color:rgba(142,68,173,.5);box-shadow:0 0 40px rgba(142,68,173,.3);"><div style="font-size:46px;margin:6px 0;" id="mi-ico">🕵️</div><div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;color:#8e44ad;margin-bottom:5px;">SECRET MISSION</div><div class="mtitle" id="mi-nm">Mission</div><div style="font-size:12px;color:var(--parch);font-style:italic;line-height:1.6;padding:10px;background:rgba(142,68,173,.05);border-radius:6px;border:1px solid rgba(142,68,173,.2);margin-bottom:14px;" id="mi-ds">Desc</div><button class="btn-p" onclick="closeModal('m-mission')" style="width:100%;">ACCEPT YOUR DESTINY</button></div></div>
+<div class="mover" id="m-ability"><div class="mbox"><div class="mtitle" id="abl-title">🌀 Abilities</div><div id="abl-list"></div><button class="btn-s" onclick="closeModal('m-ability')" style="width:100%;margin-top:6px;">← Cancel</button></div></div>
+<div class="mover" id="m-upgrade"><div class="mbox"><div class="mtitle">⬆️ Upgrade Temple</div><div style="font-size:12px;color:var(--parch-d);text-align:center;font-style:italic;margin-bottom:10px;" id="upg-name">Temple</div><div id="upg-opts"></div><button class="btn-s" onclick="closeModal('m-upgrade')" style="width:100%;margin-top:6px;">← Cancel</button></div></div>
+<div class="mover" id="m-combo"><div class="mbox"><div class="mtitle">🔗 Combine Oracle Cards</div><div style="font-size:12px;color:var(--parch-d);font-style:italic;text-align:center;margin-bottom:8px;">Select 2 cards to unleash a super effect</div><div id="hand-display" style="display:flex;flex-direction:column;gap:6px;margin:10px 0;max-height:40vh;overflow-y:auto;"></div><div style="font-family:'Cinzel',serif;font-size:10px;color:var(--gold-d);letter-spacing:2px;text-align:center;margin:8px 0 4px;">SELECTED</div><div class="combo-slots"><div class="cslot" id="cs1">?</div><div style="display:flex;align-items:center;font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);">+</div><div class="cslot" id="cs2">?</div></div><div style="font-size:12px;color:var(--parch-d);font-style:italic;padding:8px;background:rgba(201,168,76,.05);border-radius:6px;border:1px solid rgba(201,168,76,.15);margin-bottom:12px;min-height:36px;" id="combo-prev">Select 2 cards to see combined effect</div><button class="btn-p" id="combo-exec" onclick="execCombo()" style="width:100%;" disabled>UNLEASH COMBO</button><button class="btn-s" onclick="closeModal('m-combo')" style="width:100%;">← Cancel</button></div></div>
+<div class="mover" id="m-rules"><div class="mbox" style="max-height:84vh;overflow-y:auto;text-align:left;"><div class="mtitle" style="text-align:center;">📜 How to Play</div><div style="font-size:12px;line-height:1.9;color:var(--parch-d);"><p style="color:var(--gold);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;margin:10px 0 3px;">🎯 WIN</p><p>Collect all <b style="color:var(--gold)">5 Sacred Relics</b> OR complete your <b style="color:var(--gold)">Secret Mission</b></p><p style="color:var(--gold);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;margin:10px 0 3px;">🗺️ THE WORLD</p><p>3 islands: <b style="color:#e74c3c">War</b> (combat), <b style="color:#5b8cff">Prophecy</b> (Oracle power), <b style="color:#4CAF50">Dead</b> (relics). Unvisited temples are hidden fog.</p><p style="color:var(--gold);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;margin:10px 0 3px;">❤️ HP</p><p>Each player has 10 HP. Losing battles drains HP. At 0 you lose a relic and respawn.</p><p style="color:var(--gold);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;margin:10px 0 3px;">💰 COSTS</p><p>Claim: 3🪙 | Ambush: 2🪨 | Upgrade L2: 3🪙+1📜 | Upgrade L3: 5🪙+2💎 | Ability: 2🪨 or 3🪙 | Ancient: 3🪙</p><p style="color:var(--gold);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;margin:10px 0 3px;">🗡️ AMBUSH</p><p>Set on your temple (2 stone). Next opponent who enters gets -2 to their battle roll.</p><p style="color:var(--gold);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;margin:10px 0 3px;">👁️ ANCIENT ONE</p><p>Every 5 turns a god awakens and changes the entire board. Summon early for 3 gold.</p><p style="color:var(--gold);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;margin:10px 0 3px;">🔗 COMBOS</p><p>Collect 2+ Oracle cards then use COMBO to merge them for devastating super effects.</p></div><button class="btn-s" onclick="closeModal('m-rules')" style="width:100%;margin-top:14px;">← Back</button></div></div>
+<script>
+const ROLES=[
+  {id:'dragon',name:'The Dragon',icon:'🐉',color:'#c0392b',desc:'Dominates in battle. Wields fire and fury.',passive:'+1 on all dice battles',
+   abilities:[{name:'Dragon Breath',desc:'Deal 3 HP damage to all enemies on adjacent temples',costKey:'gold',costAmt:3,cd:3},{name:'Inferno Charge',desc:'+3 to your next battle roll',costKey:'stone',costAmt:2,cd:2},{name:'Scale Armor',desc:'Gain +3 HP and negate the next damage source',costKey:'gold',costAmt:3,cd:4}]},
+  {id:'prophet',name:'The Prophet',icon:'🔯',color:'#8e44ad',desc:'Sees what others cannot. Manipulates fate.',passive:'Starts knowing 1 relic location',
+   abilities:[{name:'Foresight',desc:'Look at 3 Oracle cards and keep one',costKey:'stone',costAmt:2,cd:2},{name:'Veil Walk',desc:'Move through fog this turn without revealing it',costKey:'gold',costAmt:3,cd:3},{name:'Fate Twist',desc:"Force opponent to reroll their next dice action",costKey:'stone',costAmt:2,cd:3}]},
+  {id:'trickster',name:'The Trickster',icon:'🦊',color:'#1a7a4a',desc:'Master of fortune. Draws extra cards.',passive:'Curse cards deal double effect',
+   abilities:[{name:'Double Dip',desc:'Draw 2 Oracle cards this turn',costKey:'stone',costAmt:2,cd:2},{name:"Fool's Gold",desc:'Give opponent cursed gold — they lose 2 HP on next spend',costKey:'gold',costAmt:3,cd:3},{name:'Shadow Step',desc:'Teleport to any adjacent fog temple for free',costKey:'stone',costAmt:2,cd:2}]},
+  {id:'warlord',name:'The Warlord',icon:'🗿',color:'#8B4513',desc:'Rules through iron dominion.',passive:'Owned temples last 2 extra turns',
+   abilities:[{name:'Iron Grip',desc:'Your temples cannot be stolen this turn',costKey:'stone',costAmt:2,cd:2},{name:"Warlord's Decree",desc:'Collect rent from ALL your owned temples now',costKey:'gold',costAmt:3,cd:3},{name:'Fortress',desc:'Upgrade current temple 1 level for free',costKey:'stone',costAmt:2,cd:4}]},
+  {id:'necromancer',name:'The Necromancer',icon:'💀',color:'#2e86ab',desc:'Commands the dead. Thrives on the Island of the Dead.',passive:'+2 to all rolls on Island of the Dead',
+   abilities:[{name:'Raise Dead',desc:'Restore 4 HP from a fallen opponent',costKey:'stone',costAmt:2,cd:2},{name:'Soul Drain',desc:'Steal 2 HP from target opponent',costKey:'gold',costAmt:3,cd:2},{name:'Death Ward',desc:'Negate the next relic loss (once)',costKey:'gold',costAmt:3,cd:5}]},
+  {id:'sphinx',name:'The Sphinx',icon:'🦁',color:'#d4a017',desc:'Ancient riddle-keeper. Earns through cunning.',passive:'+1 resource when visiting event tiles',
+   abilities:[{name:'Ancient Riddle',desc:'Chance to steal 4 gold from an opponent',costKey:'stone',costAmt:2,cd:3},{name:'Stone Gaze',desc:'Freeze an opponent — they cannot move next turn',costKey:'gold',costAmt:3,cd:3},{name:'Desert Mirage',desc:'Place a fake relic glow on any temple',costKey:'stone',costAmt:2,cd:4}]}
+];
+
+const TEMPLES=[
+  {id:0,name:'Citadel of Ares',icon:'⚔️',island:'war',x:60,y:40,type:'normal'},
+  {id:1,name:'Bloodforge',icon:'🔥',island:'war',x:160,y:20,type:'event'},
+  {id:2,name:'Iron Throne',icon:'👑',island:'war',x:250,y:50,type:'relic'},
+  {id:3,name:'War Drums',icon:'🥁',island:'war',x:280,y:130,type:'normal'},
+  {id:4,name:'Arena of Gods',icon:'🏟️',island:'war',x:200,y:190,type:'normal'},
+  {id:5,name:'Slaughter Pit',icon:'💀',island:'war',x:90,y:180,type:'event'},
+  {id:6,name:'Shield Wall',icon:'🛡️',island:'war',x:30,y:120,type:'normal'},
+  {id:7,name:'Oracle Spire',icon:'🔮',island:'proph',x:390,y:40,type:'normal'},
+  {id:8,name:'Eye of Truth',icon:'👁️',island:'proph',x:480,y:80,type:'relic'},
+  {id:9,name:'Astral Gate',icon:'🌌',island:'proph',x:510,y:170,type:'event'},
+  {id:10,name:"Seer's Vault",icon:'📜',island:'proph',x:450,y:250,type:'normal'},
+  {id:11,name:'Moonwell',icon:'🌙',island:'proph',x:355,y:280,type:'relic'},
+  {id:12,name:'Star Temple',icon:'⭐',island:'proph',x:315,y:190,type:'normal'},
+  {id:13,name:'Prophecy Altar',icon:'✨',island:'proph',x:345,y:110,type:'event'},
+  {id:14,name:'Tomb of Kings',icon:'🪦',island:'dead',x:155,y:340,type:'relic'},
+  {id:15,name:'Bone Crypt',icon:'🦴',island:'dead',x:75,y:390,type:'event'},
+  {id:16,name:'Death Gate',icon:'🌑',island:'dead',x:40,y:470,type:'normal'},
+  {id:17,name:'Soul River',icon:'🌊',island:'dead',x:145,y:500,type:'relic'},
+  {id:18,name:'Ashen Altar',icon:'🏺',island:'dead',x:260,y:490,type:'event'},
+  {id:19,name:'Mourning Hall',icon:'😢',island:'dead',x:295,y:400,type:'normal'},
+  {id:20,name:'Necropolis',icon:'🏙️',island:'dead',x:215,y:355,type:'normal'},
+  {id:21,name:'The Crossing',icon:'🌉',island:'war',x:155,y:305,type:'normal'},
+  {id:22,name:'Fate Bridge',icon:'🔗',island:'proph',x:310,y:310,type:'normal'}
+];
+
+const BRIDGES_RAW=[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,0],[0,3],[1,5],[4,6],[7,8],[8,9],[9,10],[10,11],[11,12],[12,7],[7,13],[13,12],[9,11],[8,13],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,14],[14,18],[15,19],[16,18],[5,21],[4,21],[21,22],[22,12],[22,11],[21,14],[21,20],[22,19]];
+const BRIDGES=[...new Set(BRIDGES_RAW.map(b=>{const[a,c]=[Math.min(b[0],b[1]),Math.max(b[0],b[1])];return`${a},${c}`}))].map(s=>s.split(',').map(Number));
+const RELIC_TEMPLES=[2,8,11,14,17];
+const RELICS=[
+  {id:0,name:'The Ember Crown',icon:'👑',effect:'+2 to all battles for 3 turns',power:'battle_bonus'},
+  {id:1,name:'The All-Seeing Shard',icon:'💎',effect:'Reveal all opponent missions',power:'reveal_all'},
+  {id:2,name:'The Stormbound Seal',icon:'⚡',effect:'Trigger a chain event of your choice',power:'chain_event'},
+  {id:3,name:'The Veil of Kings',icon:'💀',effect:'Steal 3 resources from any opponent',power:'steal'},
+  {id:4,name:'The Ashen Idol',icon:'🏺',effect:'Block all paths to one temple for 2 turns',power:'block'}
+];
+const ORACLE_CARDS=[
+  {name:'Curse of the Sphinx',sym:'🦁',type:'Curse',fx:'Opponent loses 3 gold',action:'curse'},
+  {name:'Blessing of Ra',sym:'☀️',type:'Blessing',fx:'Gain 5 gold from the ancient treasury',action:'gain_gold'},
+  {name:'Prophecy Fulfilled',sym:'📜',type:'Prophecy',fx:'Move to any adjacent temple for free',action:'advance'},
+  {name:'Eye of Horus',sym:'👁️',type:'Vision',fx:"Peek at an opponent's secret mission",action:'peek'},
+  {name:'Sand Storm',sym:'🌪️',type:'Disaster',fx:'All players move back one temple randomly',action:'sandstorm'},
+  {name:"Serpent's Whisper",sym:'🐍',type:'Curse',fx:"Skip opponent's next turn",action:'skip'},
+  {name:'River of Life',sym:'🌊',type:'Gift',fx:'Restore 4 HP to yourself',action:'heal_hp'},
+  {name:'Scarab of Fortune',sym:'🪲',type:'Fortune',fx:'Steal 3 gold from a random opponent',action:'steal_gold'},
+  {name:'Wrath of Osiris',sym:'⚡',type:'Wrath',fx:"Destroy one of opponent's temple claims",action:'destroy_claim'},
+  {name:'The Forgotten Map',sym:'🗺️',type:'Discovery',fx:'Reveal all relic locations for 2 turns',action:'reveal_relics'},
+  {name:'Blood Pact',sym:'🩸',type:'Pact',fx:'Force opponent to give you 3 gold',action:'force_trade'},
+  {name:'Mirage',sym:'✨',type:'Illusion',fx:'Swap board positions with any player',action:'swap'},
+  {name:'Decay Curse',sym:'🧟',type:'Curse',fx:"Degrade an opponent's temple by 1 level",action:'decay'},
+  {name:'Golden Feast',sym:'🍯',type:'Gift',fx:'All players gain 3 gold (including you)',action:'all_gold'},
+  {name:'War Cry',sym:'📯',type:'War',fx:'+4 to your next battle roll',action:'war_cry'}
+];
+const CHAIN_EVENTS=[
+  {name:'Ancient Tremor',sym:'🌋',fx:'All players lose 2 HP and 2 gold!'},
+  {name:'Eclipse of the Gods',sym:'🌑',fx:'All bridges blocked for 1 full round!'},
+  {name:'Spirit of the Pharaoh',sym:'👻',fx:'A random relic teleports to a new temple!'},
+  {name:'Golden Rain',sym:'✨',fx:'Everyone gains 4 gold from the heavens!'},
+  {name:'The Awakening',sym:'🌊',fx:'All fog lifts for 2 turns — the board is revealed!'},
+  {name:'Curse of Ages',sym:'💀',fx:'All owned temples lose 1 level!'},
+  {name:'Divine Fury',sym:'🔱',fx:'The wealthiest player loses half their gold!'}
+];
+const ANCIENT_ONES=[
+  {sym:'👁️',name:'RA-ATUM',title:'GOD OF THE ETERNAL SUN',fx:'All fog lifts permanently. Everyone gains 3 gold but loses 2 HP as the sun\'s gaze burns.'},
+  {sym:'🐍',name:'APOPHIS',title:'SERPENT OF CHAOS',fx:'All claimed temples become unclaimed. The board is reshuffled — chaos reigns.'},
+  {sym:'💀',name:'OSIRIS',title:'LORD OF THE DEAD',fx:'Players on the Island of the Dead lose 3 HP. All Dead Island relics respawn. One random player gains a bonus relic.'},
+  {sym:'⚖️',name:'THOTH',title:'KEEPER OF BALANCE',fx:'The player with the most relics loses one. The player with the fewest gains one. Balance is restored.'},
+  {sym:'🦁',name:'SEKHMET',title:'GODDESS OF WAR AND PLAGUE',fx:'All players lose 2 HP. Battle rewards double for 3 turns. War is absolute.'}
+];
+const SECRET_MISSIONS=[
+  {icon:'🗡️',name:"The Conqueror's Path",desc:'Win 3 dice battles against opponents.',check:'battles',target:3},
+  {icon:'🏛️',name:'Temple Dominion',desc:'Own 5 different temples simultaneously.',check:'temples',target:5},
+  {icon:'🔮',name:"Oracle's Chosen",desc:'Use 5 Oracle cards before anyone wins.',check:'cards',target:5},
+  {icon:'💰',name:'Ancient Treasurer',desc:'Accumulate 18 gold at any one time.',check:'gold',target:18},
+  {icon:'🌙',name:'Seeker of Shadows',desc:'Visit all 3 island types.',check:'islands',target:3},
+  {icon:'⚖️',name:'The Grand Merchant',desc:'Complete 4 successful resource trades.',check:'trades',target:4},
+  {icon:'❤️',name:'Iron Will',desc:'Win a battle while at 3 HP or below.',check:'clutch',target:1},
+  {icon:'🌫️',name:'Explorer Supreme',desc:'Reveal 15 fog-of-war temples.',check:'explore',target:15}
+];
+const RESOURCES=['gold','stone','scroll','crystal'];
+const RICONS={gold:'🪙',stone:'🪨',scroll:'📜',crystal:'💎'};
+const ANC_CD=5;
+
+let G={players:[],currentIdx:0,turn:1,relicLocs:{},ownedTemples:{},templeLevels:{},blockedBridges:[],ambushes:{},log:[],pendingCard:null,pendingBattle:null,hasMoved:false,hasDrawnCard:false,ancCD:ANC_CD,eclipseActive:false,fogLifted:false,battleBonus2x:false};
+let nPlayers=2,hoCallback=null;
+
+// AUDIO
+let actx=null;
+function getACtx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx;}
+function tone(f,d,tp='sine',v=0.22){try{const c=getACtx(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=tp;o.frequency.setValueAtTime(f,c.currentTime);o.frequency.exponentialRampToValueAtTime(f*.7,c.currentTime+d);g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.start(c.currentTime);o.stop(c.currentTime+d);}catch(e){}}
+function sfxDice(){[200,320,260,420].forEach((f,i)=>setTimeout(()=>tone(f,.1,'sawtooth',.18),i*70));}
+function sfxCard(){[440,554,659].forEach((f,i)=>setTimeout(()=>tone(f,.25,'sine',.2),i*90));}
+function sfxWin(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.5,'triangle',.28),i*140));}
+function sfxEvent(){tone(100,.8,'sawtooth',.35);setTimeout(()=>tone(80,.6,'sawtooth',.25),200);}
+function sfxAncient(){[80,60,50,40].forEach((f,i)=>setTimeout(()=>tone(f,.8,'sawtooth',.4),i*200));}
+function sfxClaim(){tone(660,.3,'sine',.2);setTimeout(()=>tone(880,.3,'sine',.2),150);}
+
+// UTILS
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function openModal(id){document.getElementById(id).classList.add('active');}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+function toast(msg,dur=2600){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
+function d6(){return Math.floor(Math.random()*6)+1;}
+function cp(){return G.players[G.currentIdx];}
+function glog(who,msg){G.log.unshift({who,msg,turn:G.turn});if(G.log.length>60)G.log.pop();}
+function adjTemples(tid){return BRIDGES.filter(b=>b[0]===tid||b[1]===tid).filter(b=>!bridgeBlocked(b[0],b[1])).map(b=>b[0]===tid?b[1]:b[0]);}
+function bridgeBlocked(a,b){const k=`${Math.min(a,b)},${Math.max(a,b)}`;return G.blockedBridges.some(bb=>`${Math.min(bb[0],bb[1])},${Math.max(bb[0],bb[1])}`===k);}
+function hasRelicAt(tid){if(G.relicLocs[tid]===undefined)return false;return!G.players.some(p=>p.relics.includes(G.relicLocs[tid]));}
+function gainXP(p,amt){p.xp+=amt;if(p.xp>=p.level*35){p.level++;p.xp=0;toast(`⬆️ ${p.name} reached Level ${p.level}!`,2500);sfxClaim();}}
+
+// SETUP
+function setPCount(n,btn){nPlayers=n;document.querySelectorAll('.cnt-btn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');renderPCards();}
+function renderPCards(){
+  const c=document.getElementById('pcards');
+  c.innerHTML=ROLES.slice(0,nPlayers).map((r,i)=>`
+    <div class="pcard">
+      <div class="pcard-top">
+        <div class="role-ico" style="color:${r.color}">${r.icon}</div>
+        <div><div class="role-nm" style="color:${r.color}">${r.name}</div><div class="role-ds">${r.desc}</div><div class="role-pass">✦ ${r.passive}</div></div>
+      </div>
+      <div class="abl-tags">${r.abilities.map(a=>`<span class="abl-tag">🌀 ${a.name}</span>`).join('')}</div>
+      <input class="ninput" type="text" id="pn${i}" placeholder="Player ${i+1} name..." maxlength="14">
+    </div>`).join('');
+}
+
+function startGame(){
+  const names=[];
+  for(let i=0;i<nPlayers;i++){const v=document.getElementById(`pn${i}`).value.trim();names.push(v||`Player ${i+1}`);}
+  G.relicLocs={};RELIC_TEMPLES.forEach((tid,i)=>{G.relicLocs[tid]=i;});
+  const starts=[0,7,16,4,10,19];
+  G.players=names.map((name,i)=>{
+    const role=ROLES[i];const mission=SECRET_MISSIONS[i%SECRET_MISSIONS.length];
+    return{name,role,position:starts[i],relics:[],hp:10,maxHp:10,resources:{gold:6,stone:4,scroll:3,crystal:2},level:1,xp:0,mission,missionProgress:0,missionDone:false,battlesWon:0,tradesCompleted:0,cardsUsed:0,revealed:new Set([starts[i]]),skipNextTurn:false,battleBonus:0,battleBonusTurns:0,nextBattleBonus:0,ownedTempleList:[],abilityCooldowns:{},hand:[],islandsVisited:new Set([TEMPLES[starts[i]].island]),exploredCount:1,frozenTurns:0,deathWard:false,scaleArmor:false};
+  });
+  const prophet=G.players.find(p=>p.role.id==='prophet');if(prophet)prophet.prophetKnows=RELIC_TEMPLES[0];
+  G.currentIdx=0;G.turn=1;G.ancCD=ANC_CD;G.blockedBridges=[];G.ambushes={};G.ownedTemples={};G.templeLevels={};G.eclipseActive=false;G.fogLifted=false;G.battleBonus2x=false;G.log=[];G.hasMoved=false;G.hasDrawnCard=false;
+  buildBoard();renderBoard();renderHUD();updateABar();showScreen('s-game');
+  setTimeout(()=>showMissions(),300);
+}
+
+function buildBoard(){
+  const canvas=document.getElementById('bcanvas');
+  const W=Math.max(...TEMPLES.map(t=>t.x+58))+20;
+  const H=Math.max(...TEMPLES.map(t=>t.y+58))+20;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  document.getElementById('bsvg').setAttribute('width',W);document.getElementById('bsvg').setAttribute('height',H);
+  setTimeout(()=>{const s=document.getElementById('bscroll');s.scrollLeft=(W-s.clientWidth)/2;s.scrollTop=0;},100);
+}
+
+function renderBoard(){
+  const canvas=document.getElementById('bcanvas');const svg=document.getElementById('bsvg');const p=cp();
+  svg.innerHTML=BRIDGES.map(([a,b])=>{
+    const ta=TEMPLES[a],tb=TEMPLES[b];const blocked=bridgeBlocked(a,b);
+    const aV=G.fogLifted||p.revealed.has(a),bV=G.fogLifted||p.revealed.has(b);
+    if(!aV&&!bV)return'';
+    return`<line stroke="${blocked?'rgba(192,57,43,.5)':'rgba(201,168,76,.2)'}" stroke-width="2.5" stroke-dasharray="${blocked?'4 4':'6 4'}" stroke-linecap="round" x1="${ta.x+29}" y1="${ta.y+29}" x2="${tb.x+29}" y2="${tb.y+29}"/>`;
+  }).join('');
+  canvas.querySelectorAll('.tnode').forEach(e=>e.remove());
+  TEMPLES.forEach(t=>{
+    const revealed=G.fogLifted||p.revealed.has(t.id);
+    const node=document.createElement('div');
+    node.className=`tnode ${t.island}-island`;node.id=`t${t.id}`;
+    node.style.left=t.x+'px';node.style.top=t.y+'px';
+    node.onclick=()=>onTClick(t.id);
+    if(!revealed){node.classList.add('fog');canvas.appendChild(node);return;}
+    if(hasRelicAt(t.id))node.classList.add('has-relic');
+    if(t.type==='event')node.classList.add('event-t');
+    if(G.ambushes[t.id]!==undefined)node.classList.add('ambush');
+    const owned=G.ownedTemples[t.id];const ownerColor=owned!==undefined?G.players[owned].role.color:'';
+    const tlvl=G.templeLevels[t.id]||1;
+    const here=G.players.filter(pl=>pl.position===t.id);
+    const tokens=here.map((pl,ti)=>`<div class="ptok" style="color:${pl.role.color};top:${-6+ti*-8}px;right:${-4+ti*6}px;">${pl.role.icon}</div>`).join('');
+    node.innerHTML=`<div class="tinner" style="${owned!==undefined?`border-color:${ownerColor};border-width:3px`:''}"><div class="t-ico">${t.icon}</div><div class="t-lbl">${t.name.split(' ').pop()}</div>${tokens}${owned!==undefined&&tlvl>1?`<div class="t-lvl">${tlvl}</div>`:''}</div>`;
+    canvas.appendChild(node);
+  });
+  const ct=TEMPLES[p.position];const s=document.getElementById('bscroll');
+  s.scrollTo({left:Math.max(0,ct.x+29-s.clientWidth/2),top:Math.max(0,ct.y+29-s.clientHeight/2),behavior:'smooth'});
+}
+
+function renderHUD(){
+  const hud=document.getElementById('ghud');
+  if(G.players.length<=3){
+    hud.innerHTML=`<div style="display:flex;gap:6px;align-items:center;width:100%;">${G.players.map((p,i)=>`<div class="hud-p" style="flex:1;min-width:0;opacity:${i===G.currentIdx?1:.55};"><div style="position:relative;flex-shrink:0;"><div class="pstat ${i===G.currentIdx?'active':''}" style="color:${p.role.color}">${p.role.icon}</div><div class="lv-badge">${p.level}</div></div><div class="pinfo"><div class="p-hname">${p.name.slice(0,8)}</div><div class="p-hrole" style="color:${p.role.color}">${p.role.name.split(' ').pop()}</div><div class="p-hrel">${Array(5).fill(0).map((_,ri)=>`<div class="rdot${p.relics.includes(ri)?' got':''}"></div>`).join('')}</div><div class="hp-track"><div class="hp-fill" style="width:${p.hp/p.maxHp*100}%;background:${p.hp>6?'#2ecc71':p.hp>3?'#e67e22':'#e74c3c'};"></div></div></div></div>`).join('')}<div class="hud-mid" style="flex-shrink:0;"><div class="turn-lbl">TURN</div><div class="turn-num">${G.turn}</div><div style="font-size:8px;color:var(--gold-d);letter-spacing:1px;">👁️${G.ancCD}</div></div></div>`;
+  }else{
+    hud.innerHTML=`<div style="display:flex;gap:4px;overflow-x:auto;width:100%;align-items:center;">${G.players.map((p,i)=>`<div style="display:flex;align-items:center;gap:3px;flex-shrink:0;opacity:${i===G.currentIdx?1:.5};"><div style="font-size:18px;color:${p.role.color};">${p.role.icon}</div><div><div style="font-family:'Cinzel',serif;font-size:8px;color:var(--gold-l);">${p.name.slice(0,6)}</div><div style="font-size:8px;color:var(--gold-d);">Lv${p.level}·${p.relics.length}🗝️·${p.hp}❤️</div></div></div>`).join('')}<div style="margin-left:auto;text-align:center;flex-shrink:0;"><div style="font-family:'Cinzel',serif;font-size:7px;color:var(--gold-d);">TURN</div><div style="font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold-l);">${G.turn}</div><div style="font-size:8px;color:var(--gold-d);">👁️${G.ancCD}</div></div></div>`;
+  }
+}
+
+function updateABar(){
+  const p=cp();
+  document.getElementById('cb-name').textContent=`${p.name} · ${p.role.name}`;
+  document.getElementById('cb-res').innerHTML=`🪙${p.resources.gold} 🪨${p.resources.stone} 📜${p.resources.scroll} 💎${p.resources.crystal} ❤️${p.hp}`;
+  const canBattle=G.players.some((pl,i)=>i!==G.currentIdx&&pl.position===p.position);
+  document.getElementById('btn-battle').classList.toggle('disabled',!canBattle);
+  document.getElementById('btn-move').classList.toggle('hl',!G.hasMoved);
+  document.getElementById('btn-claim').classList.toggle('disabled',G.ownedTemples[p.position]===G.currentIdx||p.resources.gold<3);
+  document.getElementById('btn-ambush').classList.toggle('disabled',p.resources.stone<2||G.ambushes[p.position]!==undefined);
+  document.getElementById('btn-upgrade').classList.toggle('disabled',G.ownedTemples[p.position]!==G.currentIdx);
+  document.getElementById('btn-card').classList.toggle('disabled',G.hasDrawnCard);
+  document.getElementById('btn-combo').classList.toggle('disabled',p.hand.length<2);
+}
+
+// HANDOFF
+function showHandoff(player,cb){
+  hoCallback=cb;
+  const crs=['🐉','🦁','🦅','🐍','🦊','🗿','💀','🔮'];
+  const ci=G.players.indexOf(player)%crs.length;
+  document.getElementById('ho-passes').textContent='THE FATE PASSES TO';
+  document.getElementById('ho-name').textContent=player.name.toUpperCase();
+  document.getElementById('ho-role').textContent=player.role.name.toUpperCase();
+  document.getElementById('ho-m-txt').textContent=`${player.mission.icon} ${player.mission.name}: ${player.mission.desc}`;
+  const c=document.getElementById('ho-creature');
+  c.textContent=crs[ci];c.style.filter=`drop-shadow(0 0 30px ${player.role.color})`;
+  c.style.animation='none';void c.offsetWidth;c.style.animation='cemerge 1s ease-out forwards';
+  showScreen('s-handoff');tone(220,1,'triangle',.28);setTimeout(()=>tone(277,.8,'triangle',.22),300);
+}
+function dismissHandoff(){tone(440,.3,'sine',.18);showScreen('s-game');renderHUD();updateABar();if(hoCallback){hoCallback();hoCallback=null;}}
+
+// MISSIONS REVEAL
+let mq=[],mi=0;
+function showMissions(){mq=[...G.players];mi=0;nextMission();}
+function nextMission(){
+  if(mi>=mq.length){showHandoff(G.players[0],()=>{});return;}
+  const p=mq[mi];
+  document.getElementById('mi-ico').textContent=p.mission.icon;document.getElementById('mi-nm').textContent=p.mission.name;
+  document.getElementById('mi-ds').innerHTML=`<b style="color:var(--gold)">${p.name}:</b> ${p.mission.desc}`;
+  openModal('m-mission');document.querySelector('#m-mission .btn-p').onclick=()=>{closeModal('m-mission');mi++;setTimeout(nextMission,200);};
+}
+
+// TEMPLE CLICK
+function onTClick(tid){
+  const reachable=document.querySelectorAll('.tnode.reachable');
+  if(reachable.length){const n=document.getElementById(`t${tid}`);if(n&&n.classList.contains('reachable'))moveToTemple(tid);clearReachable();}
+}
+function clearReachable(){document.querySelectorAll('.tnode.reachable').forEach(n=>n.classList.remove('reachable'));}
+
+// MOVEMENT
+function openMoveModal(){
+  if(G.eclipseActive){toast('🌑 Eclipse active — all bridges are blocked!');return;}
+  const p=cp();const adjs=adjTemples(p.position);
+  document.getElementById('move-info').textContent=`You are at: ${TEMPLES[p.position].name}`;
+  document.getElementById('mopts').innerHTML=adjs.map(tid=>{
+    const t=TEMPLES[tid];const rev=G.fogLifted||p.revealed.has(tid);
+    const hasR=hasRelicAt(tid);const isAmb=G.ambushes[tid]!==undefined&&G.ambushes[tid]!==G.currentIdx;
+    let flags='';if(hasR&&rev)flags+=' ✨Relic';if(t.type==='event'&&rev)flags+=' ⚡Event';if(isAmb)flags+=' ⚠️Ambush';
+    const there=G.players.filter((pl,i)=>i!==G.currentIdx&&pl.position===tid);
+    if(there.length)flags+=` · ${there.map(pl=>pl.name).join(',')} here`;
+    return`<div class="mopt" onclick="confirmMove(${tid})"><div class="mopt-ico">${rev?t.icon:'🌫️'}</div><div class="mopt-info"><div class="mopt-nm">${rev?t.name:'Fog of War'}</div><div class="mopt-det">${t.island.charAt(0).toUpperCase()+t.island.slice(1)} Island${flags}</div></div>${hasR&&rev?'<div style="font-size:18px;">🗝️</div>':''}</div>`;
+  }).join('')||'<div style="text-align:center;color:var(--ember);font-style:italic;padding:18px;">All paths blocked!</div>';
+  openModal('m-move');
+}
+function confirmMove(tid){closeModal('m-move');moveToTemple(tid);}
+
+function moveToTemple(tid){
+  const p=cp();const t=TEMPLES[tid];
+  p.position=tid;p.revealed.add(tid);adjTemples(tid).forEach(a=>p.revealed.add(a));
+  p.islandsVisited.add(t.island);p.exploredCount++;G.hasMoved=true;
+  tone(440,.2,'sine',.18);glog(p.name,`moved to ${t.name}`);
+  if(G.ambushes[tid]!==undefined&&G.ambushes[tid]!==G.currentIdx){
+    const amb=G.players[G.ambushes[tid]];
+    toast(`🗡️ AMBUSH by ${amb.name}! -2 to your next battle roll!`,3000);
+    p.nextBattleBonus=(p.nextBattleBonus||0)-2;delete G.ambushes[tid];
+  }
+  // Resources by island
+  if(t.island==='war'){p.resources.gold+=3;p.resources.stone+=1;}
+  else if(t.island==='dead'){p.resources.gold+=2;p.resources.stone+=2;}
+  else{p.resources.gold+=2;p.resources.scroll+=1;}
+  if(p.role.id==='sphinx'&&t.type==='event')p.resources.gold+=1;
+  // Relic
+  if(hasRelicAt(tid)){
+    const rId=G.relicLocs[tid];const relic=RELICS[rId];
+    p.relics.push(rId);delete G.relicLocs[tid];
+    applyRelicPower(p,relic);toast(`✨ ${p.name} claimed: ${relic.name}!`,3000);sfxCard();gainXP(p,25);glog(p.name,`claimed ${relic.name}!`);
+    if(p.relics.length>=5){setTimeout(()=>triggerWin(p,'Collected all 5 Sacred Relics'),400);return;}
+  }
+  // Event
+  if(t.type==='event')setTimeout(()=>triggerChainEvent(),350);
+  // Rent
+  if(G.ownedTemples[tid]!==undefined&&G.ownedTemples[tid]!==G.currentIdx){
+    const owner=G.players[G.ownedTemples[tid]];const rent=2*(G.templeLevels[tid]||1);
+    const paid=Math.min(rent,p.resources.gold);p.resources.gold-=paid;owner.resources.gold+=paid;
+    toast(`🏛️ Rent! Paid ${paid} gold to ${owner.name}`,2000);
+  }
+  checkMissions(p);renderBoard();renderHUD();updateABar();
+}
+
+function applyRelicPower(p,relic){
+  switch(relic.power){
+    case'battle_bonus':p.battleBonus=2;p.battleBonusTurns=3;toast(`⚔️ ${relic.name}: +2 to battles for 3 turns!`,3000);break;
+    case'steal':{const o=G.players.filter((_,i)=>i!==G.currentIdx)[0];if(o){const st=Math.min(3,o.resources.gold);o.resources.gold-=st;p.resources.gold+=st;toast(`💀 ${relic.name}: Stole ${st} gold!`,3000);}break;}
+    case'chain_event':setTimeout(()=>triggerChainEvent(),500);break;
+    case'reveal_all':G.fogLifted=true;toast(`👁️ ${relic.name}: All secrets revealed!`,3000);setTimeout(()=>G.fogLifted=false,15000);renderBoard();break;
+  }
+}
+
+// CLAIM
+function claimTemple(){
+  const p=cp();if(p.resources.gold<3){toast('Need 3 gold to claim!');return;}
+  if(G.ownedTemples[p.position]===G.currentIdx){toast('Already yours!');return;}
+  p.resources.gold-=3;G.ownedTemples[p.position]=G.currentIdx;
+  if(!p.ownedTempleList.includes(p.position))p.ownedTempleList.push(p.position);
+  if(!G.templeLevels[p.position])G.templeLevels[p.position]=1;
+  toast(`👑 ${TEMPLES[p.position].name} claimed! Opponents pay rent.`,2500);sfxClaim();glog(p.name,`claimed ${TEMPLES[p.position].name}`);
+  checkMissions(p);renderBoard();renderHUD();updateABar();
+}
+
+// AMBUSH
+function setAmbush(){
+  const p=cp();if(p.resources.stone<2){toast('Need 2 stone for ambush!');return;}
+  if(G.ambushes[p.position]!==undefined){toast('Ambush already set here!');return;}
+  p.resources.stone-=2;G.ambushes[p.position]=G.currentIdx;
+  toast(`🗡️ Ambush set at ${TEMPLES[p.position].name}!`,2500);glog(p.name,`set ambush at ${TEMPLES[p.position].name}`);
+  renderBoard();updateABar();
+}
+
+// UPGRADE
+function openUpgradeModal(){
+  const p=cp();const tid=p.position;
+  if(G.ownedTemples[tid]!==G.currentIdx){toast('You must own this temple!');return;}
+  const lvl=G.templeLevels[tid]||1;
+  document.getElementById('upg-name').textContent=`${TEMPLES[tid].icon} ${TEMPLES[tid].name} — Level ${lvl}`;
+  const opts=document.getElementById('upg-opts');
+  if(lvl>=3){opts.innerHTML='<div style="text-align:center;color:var(--gold-d);font-style:italic;padding:16px;">Maximum level reached!</div>';}
+  else if(lvl===1){opts.innerHTML=`<div class="upg-opt" onclick="doUpgrade(${tid},2)"><div class="upg-nm">⬆️ Upgrade to Level 2</div><div class="upg-ds">Rent doubles to 4 gold per visit.</div><div class="upg-cost">Cost: 3🪙 + 1📜</div></div>`;}
+  else{opts.innerHTML=`<div class="upg-opt" onclick="doUpgrade(${tid},3)"><div class="upg-nm">⬆️ Upgrade to Level 3</div><div class="upg-ds">Rent triples to 6 gold. Grants +1 to rolls when here.</div><div class="upg-cost">Cost: 5🪙 + 2💎</div></div>`;}
+  openModal('m-upgrade');
+}
+function doUpgrade(tid,toLvl){
+  const p=cp();
+  if(toLvl===2){if(p.resources.gold<3||p.resources.scroll<1){toast('Need 3🪙 + 1📜');return;}p.resources.gold-=3;p.resources.scroll-=1;}
+  else{if(p.resources.gold<5||p.resources.crystal<2){toast('Need 5🪙 + 2💎');return;}p.resources.gold-=5;p.resources.crystal-=2;}
+  G.templeLevels[tid]=toLvl;toast(`⬆️ ${TEMPLES[tid].name} upgraded to Level ${toLvl}!`,2500);sfxClaim();closeModal('m-upgrade');renderBoard();updateABar();
+}
+
+// ORACLE
+function drawCard(){
+  if(G.hasDrawnCard){toast('Already drew this turn!');return;}
+  const p=cp();const card=ORACLE_CARDS[Math.floor(Math.random()*ORACLE_CARDS.length)];
+  G.pendingCard=card;p.hand.push({...card});
+  document.getElementById('c-sym').textContent=card.sym;document.getElementById('c-nm').textContent=card.name;
+  document.getElementById('c-type').textContent=card.type.toUpperCase();document.getElementById('c-fx').textContent=card.fx;
+  document.getElementById('c-cost').textContent=(p.role.id==='trickster'&&card.type==='Curse')?'⚡ Trickster: Curse doubled!':'';
+  openModal('m-card');sfxCard();glog(p.name,`drew ${card.name}`);G.hasDrawnCard=true;updateABar();
+}
+function discardCard(){closeModal('m-card');const p=cp();const idx=p.hand.findIndex(c=>G.pendingCard&&c.name===G.pendingCard.name);if(idx>-1)p.hand.splice(idx,1);G.pendingCard=null;updateABar();}
+
+function applyCard(){
+  closeModal('m-card');const p=cp();const card=G.pendingCard;if(!card)return;
+  const opps=G.players.filter((_,i)=>i!==G.currentIdx);const ro=opps.length?opps[Math.floor(Math.random()*opps.length)]:null;
+  const mult=(p.role.id==='trickster'&&card.type==='Curse')?2:1;
+  switch(card.action){
+    case'curse':if(ro){ro.resources.gold=Math.max(0,ro.resources.gold-3*mult);toast(`🦁 ${ro.name} loses ${3*mult} gold!`);}break;
+    case'gain_gold':p.resources.gold+=5;toast('☀️ +5 gold!');break;
+    case'advance':{const a=adjTemples(p.position);if(a.length){const b=a.find(id=>hasRelicAt(id))||a[0];moveToTemple(b);}break;}
+    case'peek':if(ro)toast(`👁️ ${ro.name}'s mission: ${ro.mission.name}`,4000);break;
+    case'sandstorm':G.players.forEach(pl=>{const a=adjTemples(pl.position);if(a.length)pl.position=a[Math.floor(Math.random()*a.length)];});toast('🌪️ Sandstorm!');renderBoard();break;
+    case'skip':if(ro){ro.skipNextTurn=true;toast(`🐍 ${ro.name}'s next turn skipped!`);}break;
+    case'heal_hp':p.hp=Math.min(p.maxHp,p.hp+4);toast('🌊 +4 HP!');break;
+    case'steal_gold':if(ro){const st=Math.min(3,ro.resources.gold);ro.resources.gold-=st;p.resources.gold+=st;toast(`🪲 Stole ${st} gold from ${ro.name}!`);}break;
+    case'destroy_claim':{const ot=Object.entries(G.ownedTemples).filter(([,o])=>o!==G.currentIdx);if(ot.length){const[dt]=ot[Math.floor(Math.random()*ot.length)];delete G.ownedTemples[parseInt(dt)];toast(`⚡ Destroyed ${TEMPLES[parseInt(dt)].name} claim!`);}}break;
+    case'reveal_relics':G.fogLifted=true;setTimeout(()=>{G.fogLifted=false;renderBoard();},G.turn*2000);toast('🗺️ All relics revealed!');renderBoard();break;
+    case'force_trade':if(ro){const ft=Math.min(3,ro.resources.gold);ro.resources.gold-=ft;p.resources.gold+=ft;toast(`🩸 Blood Pact: +${ft} gold from ${ro.name}!`);}break;
+    case'swap':if(ro){[p.position,ro.position]=[ro.position,p.position];toast(`✨ Swapped with ${ro.name}!`);renderBoard();}break;
+    case'decay':{const ot2=Object.entries(G.ownedTemples).filter(([,o])=>o!==G.currentIdx);if(ot2.length){const[dt2]=ot2[Math.floor(Math.random()*ot2.length)];const cur=G.templeLevels[parseInt(dt2)]||1;if(cur>1)G.templeLevels[parseInt(dt2)]=cur-1;toast(`🧟 ${TEMPLES[parseInt(dt2)].name} degraded!`);}}break;
+    case'all_gold':G.players.forEach(pl=>pl.resources.gold+=3);toast('🍯 Everyone gains 3 gold!');break;
+    case'war_cry':p.nextBattleBonus=(p.nextBattleBonus||0)+4;toast('📯 +4 to next battle!');break;
+  }
+  p.cardsUsed++;gainXP(p,10);checkMissions(p);
+  const idx=p.hand.findIndex(c=>c.name===card.name);if(idx>-1)p.hand.splice(idx,1);
+  G.pendingCard=null;renderHUD();updateABar();
+}
+
+// COMBO
+let comboSel=[];
+function openComboModal(){
+  const p=cp();comboSel=[];updateComboUI();
+  document.getElementById('hand-display').innerHTML=p.hand.map((c,i)=>`<div class="mopt" onclick="selCombo(${i})" id="cc${i}"><div class="mopt-ico">${c.sym}</div><div class="mopt-info"><div class="mopt-nm">${c.name}</div><div class="mopt-det">${c.type} · ${c.fx}</div></div></div>`).join('')||'<div style="text-align:center;color:var(--gold-d);font-style:italic;padding:16px;">No cards in hand yet</div>';
+  openModal('m-combo');
+}
+function selCombo(idx){
+  if(comboSel.includes(idx))comboSel=comboSel.filter(i=>i!==idx);
+  else if(comboSel.length<2)comboSel.push(idx);
+  const p=cp();p.hand.forEach((_,i)=>{const el=document.getElementById(`cc${i}`);if(el)el.style.borderColor=comboSel.includes(i)?'var(--gold)':'rgba(201,168,76,.22)';});
+  updateComboUI();
+}
+function updateComboUI(){
+  const p=cp();const s1=document.getElementById('cs1'),s2=document.getElementById('cs2'),prev=document.getElementById('combo-prev'),btn=document.getElementById('combo-exec');
+  if(comboSel.length===0){s1.textContent='?';s1.classList.remove('filled');s2.textContent='?';s2.classList.remove('filled');prev.textContent='Select 2 cards';btn.disabled=true;}
+  else if(comboSel.length===1){s1.textContent=p.hand[comboSel[0]].sym;s1.classList.add('filled');s2.textContent='?';s2.classList.remove('filled');prev.textContent='Select one more...';btn.disabled=true;}
+  else{s1.textContent=p.hand[comboSel[0]].sym;s1.classList.add('filled');s2.textContent=p.hand[comboSel[1]].sym;s2.classList.add('filled');prev.textContent=getComboEffect(p.hand[comboSel[0]],p.hand[comboSel[1]]).desc;btn.disabled=false;}
+}
+function getComboEffect(c1,c2){
+  if(c1.action==='gain_gold'||c2.action==='gain_gold')return{desc:'GOLDEN STORM: +8 gold AND -3 HP to all opponents!',action:'golden_storm'};
+  if(c1.type==='Curse'&&c2.type==='Curse')return{desc:'DOUBLE CURSE: Opponent loses 6 gold AND skips 2 turns!',action:'double_curse'};
+  if(c1.type==='Wrath'||c2.type==='Wrath')return{desc:'DIVINE WRATH: +6 to next battle AND destroy a claim!',action:'divine_wrath'};
+  if(c1.action==='heal_hp'||c2.action==='heal_hp')return{desc:'ASCENSION: Full HP restored AND +4 gold!',action:'ascension'};
+  if(c1.type==='Fortune'||c2.type==='Fortune')return{desc:'GOLDEN FORTUNE: Steal 5 gold from EACH opponent!',action:'golden_fortune'};
+  return{desc:'ANCIENT POWER: +6 gold, -2 HP to all, draw extra card!',action:'ancient_power'};
+}
+function execCombo(){
+  if(comboSel.length<2)return;
+  const p=cp();const c1=p.hand[comboSel[0]],c2=p.hand[comboSel[1]];
+  const eff=getComboEffect(c1,c2);const opps=G.players.filter((_,i)=>i!==G.currentIdx);const ro=opps.length?opps[0]:null;
+  switch(eff.action){
+    case'golden_storm':p.resources.gold+=8;opps.forEach(o=>o.hp=Math.max(1,o.hp-3));toast('🌟 GOLDEN STORM!',3000);break;
+    case'double_curse':if(ro){ro.resources.gold=Math.max(0,ro.resources.gold-6);ro.skipNextTurn=true;ro.frozenTurns=2;toast(`💀 DOUBLE CURSE on ${ro.name}!`,3000);}break;
+    case'divine_wrath':p.nextBattleBonus=(p.nextBattleBonus||0)+6;const ot=Object.entries(G.ownedTemples).filter(([,o])=>o!==G.currentIdx);if(ot.length){const[dt]=ot[0];delete G.ownedTemples[parseInt(dt)];}toast('⚡ DIVINE WRATH!',3000);break;
+    case'ascension':p.hp=p.maxHp;p.resources.gold+=4;toast('✨ ASCENSION!',3000);break;
+    case'golden_fortune':opps.forEach(o=>{const st=Math.min(5,o.resources.gold);o.resources.gold-=st;p.resources.gold+=st;});toast('🍯 GOLDEN FORTUNE!',3000);break;
+    default:p.resources.gold+=6;opps.forEach(o=>o.hp=Math.max(1,o.hp-2));const nc=ORACLE_CARDS[Math.floor(Math.random()*ORACLE_CARDS.length)];p.hand.push({...nc});toast('🏺 ANCIENT POWER!',3000);break;
+  }
+  [comboSel[1],comboSel[0]].sort((a,b)=>b-a).forEach(i=>p.hand.splice(i,1));
+  sfxCard();gainXP(p,30);checkMissions(p);closeModal('m-combo');renderHUD();updateABar();renderBoard();
+}
+
+// CHAIN EVENTS
+function triggerChainEvent(){
+  const ev=CHAIN_EVENTS[Math.floor(Math.random()*CHAIN_EVENTS.length)];
+  document.getElementById('e-sym').textContent=ev.sym;document.getElementById('e-nm').textContent=ev.name;document.getElementById('e-fx').textContent=ev.fx;
+  openModal('m-event');sfxEvent();
+  switch(ev.name){
+    case'Ancient Tremor':G.players.forEach(p=>{p.hp=Math.max(1,p.hp-2);p.resources.gold=Math.max(0,p.resources.gold-2);});break;
+    case'Golden Rain':G.players.forEach(p=>p.resources.gold+=4);break;
+    case'Eclipse of the Gods':G.eclipseActive=true;setTimeout(()=>{G.eclipseActive=false;toast('🌑 Eclipse lifted!');},30000);break;
+    case'Spirit of the Pharaoh':{const re=Object.entries(G.relicLocs);if(re.length){const[ot,ri]=re[Math.floor(Math.random()*re.length)];delete G.relicLocs[parseInt(ot)];const nt=RELIC_TEMPLES[Math.floor(Math.random()*RELIC_TEMPLES.length)];G.relicLocs[nt]=parseInt(ri);}renderBoard();break;}
+    case'Curse of Ages':Object.keys(G.templeLevels).forEach(tid=>{if(G.templeLevels[tid]>1)G.templeLevels[tid]--;});renderBoard();break;
+    case'Divine Fury':{const rich=G.players.reduce((a,b)=>a.resources.gold>b.resources.gold?a:b);rich.resources.gold=Math.floor(rich.resources.gold/2);toast(`⚖️ ${rich.name} lost half their gold!`,3000);break;}
+  }
+  renderHUD();
+}
+
+// ANCIENT ONE
+function summonAncient(forced=false){
+  const p=cp();
+  if(!forced){if(p.resources.gold<3){toast('Need 3 gold to summon Ancient One!');return;}p.resources.gold-=3;}
+  const anc=ANCIENT_ONES[Math.floor(Math.random()*ANCIENT_ONES.length)];
+  document.getElementById('anc-sym').textContent=anc.sym;document.getElementById('anc-nm').textContent=anc.name;
+  document.getElementById('anc-title').textContent=anc.title;document.getElementById('anc-fx').textContent=anc.fx;
+  openModal('m-ancient');sfxAncient();G.ancCD=ANC_CD;
+  // Apply effects
+  if(anc.name==='RA-ATUM'){G.fogLifted=true;G.players.forEach(p=>{p.resources.gold+=3;p.hp=Math.max(1,p.hp-2);});setTimeout(()=>{G.fogLifted=false;renderBoard();},30000);}
+  else if(anc.name==='APOPHIS'){G.ownedTemples={};toast('🐍 All claims wiped!',3000);}
+  else if(anc.name==='OSIRIS'){G.players.forEach(p=>{if(TEMPLES[p.position]?.island==='dead')p.hp=Math.max(1,p.hp-3);});RELIC_TEMPLES.forEach((tid,i)=>{if(!G.players.some(p=>p.relics.includes(i)))G.relicLocs[tid]=i;});}
+  else if(anc.name==='THOTH'){const most=G.players.reduce((a,b)=>a.relics.length>b.relics.length?a:b);const least=G.players.reduce((a,b)=>a.relics.length<b.relics.length?a:b);if(most!==least&&most.relics.length>0){const stolen=most.relics.pop();least.relics.push(stolen);}}
+  else if(anc.name==='SEKHMET'){G.players.forEach(p=>p.hp=Math.max(1,p.hp-2));G.battleBonus2x=true;setTimeout(()=>G.battleBonus2x=false,G.turn*3000);}
+  renderBoard();renderHUD();
+}
+
+// ABILITIES
+function openAbilityModal(){
+  const p=cp();document.getElementById('abl-title').textContent=`${p.role.icon} ${p.role.name} Abilities`;
+  document.getElementById('abl-list').innerHTML=p.role.abilities.map((a,i)=>{
+    const cd=p.abilityCooldowns[i]||0;const canAfford=p.resources[a.costKey]>=a.costAmt;const onCD=cd>0;
+    return`<div class="abl-item${(!canAfford||onCD)?' off':''}" onclick="useAbility(${i})"><div class="abl-nm">🌀 ${a.name}</div><div class="abl-ds">${a.desc}</div><div class="abl-cost">Cost: ${a.costAmt}${RICONS[a.costKey]}${onCD?` · CD: ${cd} turns`:''}</div></div>`;
+  }).join('');
+  openModal('m-ability');
+}
+function useAbility(idx){
+  const p=cp();const a=p.role.abilities[idx];
+  if((p.abilityCooldowns[idx]||0)>0){toast(`On cooldown for ${p.abilityCooldowns[idx]} more turns!`);return;}
+  if(p.resources[a.costKey]<a.costAmt){toast(`Need ${a.costAmt}${RICONS[a.costKey]}!`);return;}
+  p.resources[a.costKey]-=a.costAmt;p.abilityCooldowns[idx]=a.cd;
+  closeModal('m-ability');execAbility(p,p.role.id,idx);renderHUD();updateABar();
+}
+function execAbility(p,roleId,idx){
+  const opps=G.players.filter((_,i)=>i!==G.currentIdx);const ro=opps.length?opps[Math.floor(Math.random()*opps.length)]:null;
+  if(roleId==='dragon'){
+    if(idx===0){adjTemples(p.position).forEach(tid=>G.players.forEach((pl,i)=>{if(i!==G.currentIdx&&pl.position===tid)pl.hp=Math.max(1,pl.hp-3);}));toast('🔥 Dragon Breath! -3 HP to adjacent enemies!',2500);}
+    else if(idx===1){p.nextBattleBonus=(p.nextBattleBonus||0)+3;toast('💪 Inferno Charge! +3 to next battle!');}
+    else{p.hp=Math.min(p.maxHp,p.hp+3);p.scaleArmor=true;toast('🛡️ Scale Armor! +3 HP, next hit negated!');}
+  }else if(roleId==='prophet'){
+    if(idx===0){const nc=ORACLE_CARDS[Math.floor(Math.random()*ORACLE_CARDS.length)];p.hand.push({...nc});toast(`🔮 Foresight: Found ${nc.name}!`,2500);}
+    else if(idx===1){toast('👁️ Veil Walk active this turn!');}
+    else if(ro){ro.nextBattleBonus=(ro.nextBattleBonus||0)-1;toast(`📜 Fate Twist on ${ro.name}!`);}
+  }else if(roleId==='trickster'){
+    if(idx===0){const c1=ORACLE_CARDS[Math.floor(Math.random()*ORACLE_CARDS.length)];const c2=ORACLE_CARDS[Math.floor(Math.random()*ORACLE_CARDS.length)];p.hand.push({...c1},{...c2});toast(`🦊 Double Dip! Got ${c1.name} & ${c2.name}!`,3000);}
+    else if(idx===1&&ro){ro.resources.gold+=3;toast(`🃏 Fool's Gold to ${ro.name}!`);}
+    else{const fog=adjTemples(p.position).filter(t=>!p.revealed.has(t));if(fog.length){const dest=fog[Math.floor(Math.random()*fog.length)];p.position=dest;p.revealed.add(dest);adjTemples(dest).forEach(a=>p.revealed.add(a));toast('🌫️ Shadow Step!');renderBoard();}}
+  }else if(roleId==='warlord'){
+    if(idx===0){toast('🗿 Iron Grip! Temples protected this turn!');}
+    else if(idx===1){let total=0;p.ownedTempleList.forEach(tid=>{if(G.ownedTemples[tid]===G.currentIdx)total+=(G.templeLevels[tid]||1)*2;});p.resources.gold+=total;toast(`👑 Decree! +${total} gold!`,2500);}
+    else if(G.ownedTemples[p.position]===G.currentIdx){const cur=G.templeLevels[p.position]||1;if(cur<3){G.templeLevels[p.position]=cur+1;toast('🏰 Fortress upgrade!');renderBoard();}else toast('Already max!');}
+  }else if(roleId==='necromancer'){
+    if(idx===0){p.hp=Math.min(p.maxHp,p.hp+4);toast('💀 Raise Dead! +4 HP!');}
+    else if(idx===1&&ro){ro.hp=Math.max(1,ro.hp-2);p.hp=Math.min(p.maxHp,p.hp+2);toast(`👻 Soul Drain from ${ro.name}!`);}
+    else{p.deathWard=true;toast('🛡️ Death Ward active!');}
+  }else if(roleId==='sphinx'){
+    if(idx===0){if(ro&&Math.random()>.4){const st=Math.min(4,ro.resources.gold);ro.resources.gold-=st;p.resources.gold+=st;toast(`🦁 Riddle success! +${st} gold!`);}else toast('🦁 Riddle failed!');}
+    else if(idx===1&&ro){ro.frozenTurns=1;toast(`🗿 Stone Gaze! ${ro.name} frozen next turn!`);}
+    else{toast('✨ Desert Mirage placed!');}
+  }
+}
+
+// BATTLE
+function initBattle(){
+  const p=cp();const opps=G.players.filter((pl,i)=>i!==G.currentIdx&&pl.position===p.position);
+  if(!opps.length){toast('No opponents here!');return;}
+  const opp=opps[0];G.pendingBattle={att:G.currentIdx,def:G.players.indexOf(opp)};
+  document.getElementById('bdisp').innerHTML=`<div class="bside"><div class="bstat">${p.role.icon}</div><div class="bpnm">${p.name}</div><div class="bdval" id="bd-att">?</div><div class="bbonus">${p.role.id==='dragon'?'+1 Dragon':''} ${p.battleBonus>0?`+${p.battleBonus}`:''} ${p.nextBattleBonus?`+${p.nextBattleBonus}`:''}</div><div class="bhp">❤️${p.hp}</div></div><div class="bvs">VS</div><div class="bside"><div class="bstat">${opp.role.icon}</div><div class="bpnm">${opp.name}</div><div class="bdval" id="bd-def">?</div><div class="bbonus">${opp.role.id==='dragon'?'+1 Dragon':''}</div><div class="bhp">❤️${opp.hp}</div></div>`;
+  document.getElementById('bres').textContent='The gods await...';
+  document.getElementById('broll-btn').style.display='block';document.getElementById('bclose-btn').style.display='none';
+  openModal('m-battle');tone(150,.5,'sawtooth',.28);
+}
+function execBattle(){
+  const{att,def}=G.pendingBattle;const a=G.players[att],d=G.players[def];
+  let ar=d6(),dr=d6();
+  if(a.role.id==='dragon')ar++;if(d.role.id==='dragon')dr++;
+  ar+=(a.battleBonus||0)+(a.nextBattleBonus||0);if(a.role.id==='necromancer'&&TEMPLES[a.position]?.island==='dead')ar+=2;
+  a.nextBattleBonus=0;
+  document.getElementById('bd-att').textContent=ar;document.getElementById('bd-def').textContent=dr;sfxDice();
+  const mult=G.battleBonus2x?2:1;let res='';
+  if(ar>dr){const st=Math.min(2*mult,d.resources.gold);d.resources.gold-=st;a.resources.gold+=st;d.hp=Math.max(0,d.hp-2);a.battlesWon++;gainXP(a,18);res=`⚔️ ${a.name} WINS! +${st} gold, ${d.name} -2 HP!`;glog(a.name,`defeated ${d.name}`);checkMissions(a);if(d.hp<=0)onDeath(d);}
+  else if(dr>ar){const st=Math.min(2*mult,a.resources.gold);a.resources.gold-=st;d.resources.gold+=st;a.hp=Math.max(0,a.hp-2);d.battlesWon++;gainXP(d,18);res=`🛡️ ${d.name} DEFENDS! +${st} gold, ${a.name} -2 HP!`;checkMissions(d);if(a.hp<=0)onDeath(a);}
+  else res=`⚖️ DRAW! No gold changes hands.`;
+  if(a.battleBonusTurns>0){a.battleBonusTurns--;if(a.battleBonusTurns===0)a.battleBonus=0;}
+  document.getElementById('bres').textContent=res;document.getElementById('broll-btn').style.display='none';document.getElementById('bclose-btn').style.display='block';
+  renderHUD();updateABar();
+}
+function onDeath(p){
+  if(p.deathWard){p.deathWard=false;p.hp=3;toast(`💀 ${p.name}'s Death Ward saved them!`,3000);return;}
+  if(p.relics.length>0){const lost=p.relics.pop();p.hp=5;const relic=RELICS[lost];toast(`💔 ${p.name} fell! Lost ${relic.name}. Respawns with 5 HP.`,3500);const et=RELIC_TEMPLES.find(tid=>G.relicLocs[tid]===undefined);if(et!==undefined)G.relicLocs[et]=lost;p.position=0;renderBoard();}
+  else{p.hp=3;toast(`💀 ${p.name} fell but had no relics. Continues weakened.`,3000);}
+}
+
+// TRADE
+let tGive=null,tRecv=null,tradeTarget=null;
+function openTradeModal(){
+  tGive=null;tRecv=null;tradeTarget=null;const p=cp();
+  const targets=G.players.filter((_,i)=>i!==G.currentIdx);
+  document.getElementById('trade-targets').innerHTML=targets.map(pl=>`<div class="mopt" onclick="setTTarget(${G.players.indexOf(pl)},this)" style="padding:8px 12px;"><div style="font-size:20px;color:${pl.role.color}">${pl.role.icon}</div><div class="mopt-info"><div class="mopt-nm">${pl.name}</div><div class="mopt-det">🪙${pl.resources.gold} 🪨${pl.resources.stone} 📜${pl.resources.scroll} 💎${pl.resources.crystal}</div></div></div>`).join('');
+  document.getElementById('tgive').innerHTML=RESOURCES.map(r=>`<div class="ritem" id="tg-${r}" onclick="setTGive('${r}')"><div class="r-ico">${RICONS[r]}</div><div class="r-nm">${r.toUpperCase()}</div><div class="r-cnt">${p.resources[r]}</div></div>`).join('');
+  document.getElementById('trecv').innerHTML=RESOURCES.map(r=>`<div class="ritem" id="tr-${r}" onclick="setTRecv('${r}')"><div class="r-ico">${RICONS[r]}</div><div class="r-nm">${r.toUpperCase()}</div></div>`).join('');
+  openModal('m-trade');
+}
+function setTTarget(idx,el){tradeTarget=idx;document.querySelectorAll('#trade-targets .mopt').forEach(e=>e.style.borderColor='rgba(201,168,76,.22)');el.style.borderColor='var(--gold)';}
+function setTGive(r){tGive=r;document.querySelectorAll('#tgive .ritem').forEach(e=>e.classList.remove('sel'));document.getElementById(`tg-${r}`).classList.add('sel');}
+function setTRecv(r){tRecv=r;document.querySelectorAll('#trecv .ritem').forEach(e=>e.classList.remove('sel'));document.getElementById(`tr-${r}`).classList.add('sel');}
+function execTrade(){
+  if(!tGive||!tRecv){toast('Select what to give and receive!');return;}
+  if(tGive===tRecv){toast('Cannot trade same resource!');return;}
+  if(tradeTarget===null){toast('Select a trade partner!');return;}
+  const p=cp();if(p.resources[tGive]<2){toast('Need at least 2 to trade!');return;}
+  p.resources[tGive]-=2;p.resources[tRecv]+=2;p.tradesCompleted++;gainXP(p,8);
+  closeModal('m-trade');toast(`⚖️ Traded 2${RICONS[tGive]} for 2${RICONS[tRecv]}!`);glog(p.name,`traded with ${G.players[tradeTarget].name}`);
+  checkMissions(p);renderHUD();updateABar();
+}
+
+// STATS
+function showStats(){
+  document.getElementById('stats-content').innerHTML=G.players.map(p=>`<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(201,168,76,.1);"><div style="font-family:'Cinzel',serif;font-size:12px;color:${p.role.color};margin-bottom:7px;">${p.role.icon} ${p.name} · Lv${p.level} ${G.currentIdx===G.players.indexOf(p)?'← CURRENT':''}</div><div class="srow"><span class="slbl">HP</span><span class="sval">❤️${p.hp}/${p.maxHp}</span></div><div class="srow"><span class="slbl">RELICS</span><span class="sval">${p.relics.map(r=>RELICS[r].icon).join('')||'None'}</span></div><div class="srow"><span class="slbl">GOLD</span><span class="sval">🪙${p.resources.gold}</span></div><div class="srow"><span class="slbl">STONE</span><span class="sval">🪨${p.resources.stone}</span></div><div class="srow"><span class="slbl">SCROLL</span><span class="sval">📜${p.resources.scroll}</span></div><div class="srow"><span class="slbl">CRYSTAL</span><span class="sval">💎${p.resources.crystal}</span></div><div class="srow"><span class="slbl">BATTLES WON</span><span class="sval">⚔️${p.battlesWon}</span></div><div class="srow"><span class="slbl">CARDS USED</span><span class="sval">🔮${p.cardsUsed}</span></div><div class="srow"><span class="slbl">MISSION</span><span class="sval" style="font-size:10px;max-width:160px;text-align:right;">${p.mission.icon} ${p.mission.name}</span></div><div class="srow"><span class="slbl">PROGRESS</span><span class="sval">${p.missionProgress}/${p.mission.target}</span></div></div>`).join('')+`<div style="margin-top:10px;padding:10px;background:rgba(201,168,76,.04);border-radius:6px;border:1px solid rgba(201,168,76,.12);"><div style="font-family:'Cinzel',serif;font-size:10px;color:var(--gold-d);letter-spacing:2px;margin-bottom:6px;">RELIC LOCATIONS</div>${Object.entries(G.relicLocs).map(([tid,rid])=>`<div style="font-size:11px;color:var(--parch-d);margin:3px 0;">${RELICS[rid].icon} ${RELICS[rid].name} → ${TEMPLES[parseInt(tid)]?.name}</div>`).join('')||'<div style="font-size:11px;color:var(--gold-d);font-style:italic;">All relics collected!</div>'}</div>`;
+  openModal('m-stats');
+}
+
+// MISSIONS
+function checkMissions(p){
+  const m=p.mission;let done=false;
+  if(m.check==='battles'&&p.battlesWon>=m.target)done=true;
+  else if(m.check==='temples'&&p.ownedTempleList.filter(tid=>G.ownedTemples[tid]===G.players.indexOf(p)).length>=m.target)done=true;
+  else if(m.check==='cards'&&p.cardsUsed>=m.target)done=true;
+  else if(m.check==='gold'&&p.resources.gold>=m.target)done=true;
+  else if(m.check==='islands'&&p.islandsVisited.size>=m.target)done=true;
+  else if(m.check==='trades'&&p.tradesCompleted>=m.target)done=true;
+  else if(m.check==='clutch'&&p.battlesWon>0&&p.hp<=3)done=true;
+  else if(m.check==='explore'&&p.exploredCount>=m.target)done=true;
+  if(m.name==='Ancient Treasurer'&&p.resources.gold>=m.target)done=true;
+  if(done&&!p.missionDone){p.missionDone=true;setTimeout(()=>triggerWin(p,`Completed Secret Mission: ${m.name}`),400);}
+  p.missionProgress=Math.max(p.missionProgress,p.battlesWon,p.tradesCompleted,p.cardsUsed,p.exploredCount,p.islandsVisited.size);
+}
+
+// END TURN
+function endTurn(){
+  if(!G.hasMoved){toast('You must move before ending your turn!');return;}
+  const p=cp();
+  Object.keys(p.abilityCooldowns).forEach(k=>{if(p.abilityCooldowns[k]>0)p.abilityCooldowns[k]--;});
+  if(p.battleBonusTurns>0){p.battleBonusTurns--;if(p.battleBonusTurns===0)p.battleBonus=0;}
+  G.hasMoved=false;G.hasDrawnCard=false;glog(p.name,'ended turn');
+  let nextIdx=(G.currentIdx+1)%G.players.length;
+  if(nextIdx===0){G.turn++;G.ancCD--;if(G.ancCD<=0)setTimeout(()=>summonAncient(true),600);}
+  let skip=0;
+  while((G.players[nextIdx].skipNextTurn||G.players[nextIdx].frozenTurns>0)&&skip<G.players.length){
+    const np=G.players[nextIdx];
+    if(np.skipNextTurn){np.skipNextTurn=false;toast(`🐍 ${np.name}'s turn skipped!`);}
+    if(np.frozenTurns>0){np.frozenTurns--;toast(`🗿 ${np.name} frozen! (${np.frozenTurns} left)`);}
+    nextIdx=(nextIdx+1)%G.players.length;if(nextIdx===0)G.turn++;skip++;
+  }
+  G.currentIdx=nextIdx;renderBoard();renderHUD();showHandoff(G.players[G.currentIdx],()=>updateABar());
+}
+
+// WIN
+function triggerWin(p,reason){
+  document.getElementById('wplayer').textContent=p.name;document.getElementById('wreason').textContent=reason;document.getElementById('wcrown').textContent=p.role.icon;
+  document.getElementById('wstats').innerHTML=`<span style="color:var(--gold);">Role:</span> ${p.role.name}<br><span style="color:var(--gold);">Relics:</span> ${p.relics.map(r=>RELICS[r].icon+' '+RELICS[r].name).join(', ')||'None'}<br><span style="color:var(--gold);">Level:</span> ${p.level}<br><span style="color:var(--gold);">Battles Won:</span> ${p.battlesWon}<br><span style="color:var(--gold);">HP Remaining:</span> ${p.hp}/${p.maxHp}<br><span style="color:var(--gold);">Turns Played:</span> ${G.turn}`;
+  const wp=document.getElementById('wpart');wp.innerHTML='';const syms=['✨','🌟','🏺','⭐','💎','🪙','👑','🔮'];
+  for(let i=0;i<24;i++){const pt=document.createElement('div');pt.className='wp';pt.textContent=syms[i%syms.length];pt.style.left=Math.random()*100+'vw';pt.style.animationDuration=(2+Math.random()*3)+'s';pt.style.animationDelay=(Math.random()*2)+'s';wp.appendChild(pt);}
+  sfxWin();showScreen('s-win');
+}
+
+function resetGame(){G={players:[],currentIdx:0,turn:1,relicLocs:{},ownedTemples:{},templeLevels:{},blockedBridges:[],ambushes:{},log:[],pendingCard:null,pendingBattle:null,hasMoved:false,hasDrawnCard:false,ancCD:ANC_CD,eclipseActive:false,fogLifted:false,battleBonus2x:false};}
+
+renderPCards();
+
+// ── BOARD DRAG-TO-SCROLL (mouse drag on PC, native touch on mobile) ──
+(function(){
+  let isDown=false,startX,startY,scrollL,scrollT;
+
+  function initDrag(){
+    const el=document.getElementById('bscroll');
+    if(!el)return;
+
+    // remove old listeners cleanly by cloning
+    const fresh=el.cloneNode(true);
+    el.parentNode.replaceChild(fresh,el);
+    const board=document.getElementById('bscroll');
+
+    board.style.cursor='grab';
+    board.style.touchAction='pan-x pan-y';
+    board.style.webkitOverflowScrolling='touch';
+    board.style.overflowX='auto';
+    board.style.overflowY='auto';
+
+    // Mouse down — only on board background, not temple nodes
+    board.addEventListener('mousedown',function(e){
+      if(e.target.closest('.tnode')){return;}
+      isDown=true;
+      board.style.cursor='grabbing';
+      startX=e.clientX;
+      startY=e.clientY;
+      scrollL=board.scrollLeft;
+      scrollT=board.scrollTop;
+      e.preventDefault();
+    });
+
+    document.addEventListener('mouseup',function(){
+      if(!isDown)return;
+      isDown=false;
+      const b=document.getElementById('bscroll');
+      if(b)b.style.cursor='grab';
+    });
+
+    board.addEventListener('mousemove',function(e){
+      if(!isDown)return;
+      e.preventDefault();
+      const dx=e.clientX-startX;
+      const dy=e.clientY-startY;
+      board.scrollLeft=scrollL-dx;
+      board.scrollTop=scrollT-dy;
+    });
+
+    // Touch events for fine control on mobile
+    let tStartX,tStartY,tScrollL,tScrollT;
+    board.addEventListener('touchstart',function(e){
+      if(e.touches.length===1&&!e.target.closest('.tnode')){
+        tStartX=e.touches[0].clientX;
+        tStartY=e.touches[0].clientY;
+        tScrollL=board.scrollLeft;
+        tScrollT=board.scrollTop;
+      }
+    },{passive:true});
+
+    board.addEventListener('touchmove',function(e){
+      if(e.touches.length===1&&tStartX!==undefined){
+        const dx=e.touches[0].clientX-tStartX;
+        const dy=e.touches[0].clientY-tStartY;
+        board.scrollLeft=tScrollL-dx;
+        board.scrollTop=tScrollT-dy;
+      }
+    },{passive:true});
+  }
+
+  // Hook into showScreen so drag initialises every time game screen opens
+  const _orig=window.showScreen;
+  window.showScreen=function(id){
+    _orig(id);
+    if(id==='s-game')setTimeout(initDrag,300);
+  };
+
+  // Also init immediately if already on game screen
+  setTimeout(()=>{if(document.getElementById('s-game')&&document.getElementById('s-game').classList.contains('active'))initDrag();},500);
+})();
+</script>
+</body></html>
